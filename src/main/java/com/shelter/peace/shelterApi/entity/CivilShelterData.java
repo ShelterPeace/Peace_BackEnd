@@ -30,8 +30,8 @@ public class CivilShelterData {
     private String 최종수정시점;
     private String 데이터갱신구분;
     private String 데이터갱신일자;
-    private String 좌표정보_x;
-    private String 좌표정보_y;
+    private double 좌표정보_x;
+    private double 좌표정보_y;
     private String 비상시설위치;
     private String 시설구분명;
     private String 시설명건물명;
