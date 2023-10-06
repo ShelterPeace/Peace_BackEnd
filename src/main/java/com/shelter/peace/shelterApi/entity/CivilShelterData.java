@@ -1,9 +1,6 @@
 package com.shelter.peace.shelterApi.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 
@@ -18,20 +15,14 @@ public class CivilShelterData {
     private String 개방서비스명;
     private String 개방서비스아이디;
     private String 개방자치단체코드;
+    @Column(unique = true)
     private String 관리번호;
     private String 인허가일자;
-    private String 인허가취소일자;
     private String 영업상태구분코드;
     private String 영업상태명;
     private String 상세영업상태코드;
     private String 상세영업상태명;
-    private String 폐업일자;
-    private String 휴업시작일자;
-    private String 휴업종료일자;
-    private String 재개업일자;
-    private String 소재지전화;
     private String 소재지면적;
-    private String 소재지우편번호;
     private String 소재지전체주소;
     private String 도로명전체주소;
     private String 도로명우편번호;
@@ -39,13 +30,10 @@ public class CivilShelterData {
     private String 최종수정시점;
     private String 데이터갱신구분;
     private String 데이터갱신일자;
-    private String 업태구분명;
     private String 좌표정보_x;
     private String 좌표정보_y;
     private String 비상시설위치;
     private String 시설구분명;
     private String 시설명건물명;
-    private String 해제일자;
-
 
 }
