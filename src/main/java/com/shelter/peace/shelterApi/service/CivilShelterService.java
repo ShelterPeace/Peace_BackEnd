@@ -54,8 +54,10 @@ public class CivilShelterService {
                         civilShelterData.set최종수정시점(record.get("최종수정시점"));
                         civilShelterData.set데이터갱신구분(record.get("데이터갱신구분"));
                         civilShelterData.set데이터갱신일자(record.get("데이터갱신일자"));
-                        civilShelterData.set좌표정보_x(record.get("좌표정보(x)"));
-                        civilShelterData.set좌표정보_y(record.get("좌표정보(y)"));
+                        if(!record.get("좌표정보(x)").isEmpty()) {
+                            civilShelterData.set좌표정보_x(Double.parseDouble(record.get("좌표정보(x)")));
+                            civilShelterData.set좌표정보_y(Double.parseDouble(record.get("좌표정보(y)")));
+                        }
                         civilShelterData.set비상시설위치(record.get("비상시설위치"));
                         civilShelterData.set시설구분명(record.get("시설구분명"));
                         civilShelterData.set시설명건물명(record.get("시설명건물명"));
@@ -96,8 +98,8 @@ public class CivilShelterService {
                     ps.setString(16, civilShelterData.get최종수정시점());
                     ps.setString(17, civilShelterData.get데이터갱신구분());
                     ps.setString(18, civilShelterData.get데이터갱신일자());
-                    ps.setString(19, civilShelterData.get좌표정보_x());
-                    ps.setString(20, civilShelterData.get좌표정보_y());
+                    ps.setString(19, String.valueOf(civilShelterData.get좌표정보_x()));
+                    ps.setString(20, String.valueOf(civilShelterData.get좌표정보_y()));
                     ps.setString(21, civilShelterData.get비상시설위치());
                     ps.setString(22, civilShelterData.get시설구분명());
                     ps.setString(23, civilShelterData.get시설명건물명());
