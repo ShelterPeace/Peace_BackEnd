@@ -34,6 +34,9 @@ dependencies {
     implementation 'org.apache.commons:commons-csv:1.8'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+    implementation 'com.sun.xml.bind:jaxb-impl:2.3.0.1'
 
 }
 
