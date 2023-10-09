@@ -4,13 +4,14 @@ import com.shelter.peace.user.service.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "USER")
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,50 +27,50 @@ public class User {
     @Column(name = "USER_PWD", nullable = false)
     private String userPwd;
 
-    @Column(name = "USER_NAME", nullable = false)
-    private String userName;
+//    @Column(name = "USER_NAME", nullable = false)
+//    private String userName;
+//
+//    @Column(name = "USER_PHONE", nullable = false)
+//    private String userPhone;
+//
+//    @Column(name = "USER_ADDRESS", nullable = false)
+//    private String userAddress;
+//
+//    @Column(name = "USER_BIRTH", nullable = true)
+//    private LocalDate userBirth;
+//
+//    @Column(name = "USER_EMAIL", nullable = true, unique = true)
+//    private String userEmail = "";
+//
+//    @Column(name = "USER_SVC_YN", nullable = false)
+//    private boolean userSvc;
+//
+//    @Column(name = "USER_PS_YN", nullable = false)
+//    private boolean userPs;
+//
+//    @Column(name = "USER_LOC_YN", nullable = false)
+//    private boolean userLoc;
+//
+//    @Column(name = "USER_REG_DATE", nullable = false)
+//    private LocalDate userRegDate = LocalDate.now();
 
-    @Column(name = "USER_PHONE", nullable = false)
-    private String userPhone;
-
-    @Column(name = "USER_ADDRESS", nullable = false)
-    private String userAddress;
-
-    @Column(name = "USER_BIRTH", nullable = true)
-    private LocalDate userBirth;
-
-    @Column(name = "USER_EMAIL", nullable = true, unique = true)
-    private String userEmail = "";
-
-    @Column(name = "USER_SVC_YN", nullable = false)
-    private boolean userSvc;
-
-    @Column(name = "USER_PS_YN", nullable = false)
-    private boolean userPs;
-
-    @Column(name = "USER_LOC_YN", nullable = false)
-    private boolean userLoc;
-
-    @Column(name = "USER_REG_DATE", nullable = false)
-    private LocalDate userRegDate = LocalDate.now();
-
-    @Column(name = "USER_ROLE", nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     public UserDTO EntityTODTO() {
         return UserDTO.builder()
                 .id(this.id)
                 .userId(this.userId)
                 .userPwd(this.userPwd)
-                .userName(this.userName)
-                .userPhone(this.userPhone)
-                .userAddress(this.userAddress)
-                .userBirth(this.userBirth)
-                .userEmail(this.userEmail)
-                .userSvc(this.userSvc)
-                .userPs(this.userPs)
-                .userLoc(this.userLoc)
-                .userRegDate(this.userRegDate)
+//                .userName(this.userName)
+//                .userPhone(this.userPhone)
+//                .userAddress(this.userAddress)
+//                .userBirth(this.userBirth)
+//                .userEmail(this.userEmail)
+//                .userSvc(this.userSvc)
+//                .userPs(this.userPs)
+//                .userLoc(this.userLoc)
+//                .userRegDate(this.userRegDate)
                 .role(this.role)
                 .build();
     }

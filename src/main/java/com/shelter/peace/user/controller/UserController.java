@@ -15,16 +15,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
-
-    @PostMapping("/user")
-    public ResponseEntity<?> inputUser(@RequestBody UserDTO userDTO) {
-        ResponseDTO<String> responseDTO = new ResponseDTO<>();
-
-        userService.inputUser(userDTO);
-
-        responseDTO.setItem("성공");
-        responseDTO.setStatusCode(HttpStatus.OK.value());
-        return ResponseEntity.ok().body(responseDTO);
-    }
 }
