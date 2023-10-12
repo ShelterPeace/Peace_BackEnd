@@ -3,7 +3,6 @@ package com.shelter.peace.shelterApi.service;
 import com.shelter.peace.shelterApi.entity.CivilShelterData;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;

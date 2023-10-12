@@ -9,4 +9,9 @@ public class DataUploadController {
     public String showUploadForm() {
         return "upload.html";
     }
+
+    @GetMapping("/excel/upload")
+    public String excelForm() {
+        return "excel";
+    }
 }
