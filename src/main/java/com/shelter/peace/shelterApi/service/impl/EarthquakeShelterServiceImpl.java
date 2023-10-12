@@ -35,7 +35,7 @@ public class EarthquakeShelterServiceImpl implements EarthquakeShelterService {
         List<EarthquakeShelterDTO> extractedDataList = new ArrayList<>();
 
         // API 호출을 위한 URL 생성
-        String url = apiUrl + "?serviceKey=" + apiKey + "&pageNo=1&numOfRows=1000&type=json";
+        String url = apiUrl + "?serviceKey=" + apiKey + "&pageNo=1&numOfRows=5&type=json";
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -45,58 +45,64 @@ public class EarthquakeShelterServiceImpl implements EarthquakeShelterService {
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+            ResponseEntity<EarthquakeShelterResponseDTO> response = restTemplate.exchange(url, HttpMethod.GET, entity, EarthquakeShelterResponseDTO.class);
 
             // JSON 응답 데이터 출력
-            String jsonResponse = response.getBody();
+            List<EarthquakeShelterDTO> jsonResponse = response.getBody().getEarthquakeOutdoorsShelter().get(1).getRow();
             System.out.println("Received JSON data: \n" + jsonResponse);
 
-            // JSON 데이터 파싱
-            ObjectMapper objectMapper = new ObjectMapper();
-            EarthquakeShelterResponseDTO responseDTO = objectMapper.readValue(jsonResponse, EarthquakeShelterResponseDTO.class);
-
-            System.out.println("Response DTO: " + responseDTO.toString());
-
-            // 파싱된 데이터 사용
-            if (responseDTO != null && responseDTO.getEarthquakeOutdoorsShelter() != null) {
-                List<EarthquakeShelterDTO> row = responseDTO.getEarthquakeOutdoorsShelter().get(0).getRow();
-
-                for (EarthquakeShelterDTO data : row) {
-                    // 필요한 정보 추출하여 리스트에 추가
-                    EarthquakeShelterDTO extractedData = new EarthquakeShelterDTO();
-                    extractedData.setArcd(data.getArcd());
-                    extractedData.setAcmdfclty_sn(data.getAcmdfclty_sn());
-                    extractedData.setCtprvn_nm(data.getCtprvn_nm());
-                    extractedData.setSgg_nm(data.getSgg_nm());
-                    extractedData.setVt_acmdfclty_nm(data.getVt_acmdfclty_nm());
-                    extractedData.setRdnmadr_cd(data.getRdnmadr_cd());
-                    extractedData.setBdong_cd(data.getBdong_cd());
-                    extractedData.setHdong_cd(data.getHdong_cd());
-                    extractedData.setDtl_adres(data.getDtl_adres());
-                    extractedData.setFclty_ar(data.getFclty_ar());
-                    extractedData.setXcord(data.getXcord());
-                    extractedData.setYcord(data.getYcord());
-
-                    extractedDataList.add(extractedData);
-
-                    // 필요한 정보 추출하여 엔티티에 저장
-                    EarthquakeShelterData earthquakeShelterEntity = new EarthquakeShelterData();
-                    earthquakeShelterEntity.setArcd(data.getArcd());
-                    earthquakeShelterEntity.setAcmdfclty_sn(data.getAcmdfclty_sn());
-                    earthquakeShelterEntity.setCtprvn_nm(data.getCtprvn_nm());
-                    earthquakeShelterEntity.setSgg_nm(data.getSgg_nm());
-                    earthquakeShelterEntity.setVt_acmdfclty_nm(data.getVt_acmdfclty_nm());
-                    earthquakeShelterEntity.setRdnmadr_cd(data.getRdnmadr_cd());
-                    earthquakeShelterEntity.setBdong_cd(data.getBdong_cd());
-                    earthquakeShelterEntity.setHdong_cd(data.getHdong_cd());
-                    earthquakeShelterEntity.setDtl_adres(data.getDtl_adres());
-                    earthquakeShelterEntity.setFclty_ar(data.getFclty_ar());
-                    earthquakeShelterEntity.setXcord(data.getXcord());
-                    earthquakeShelterEntity.setYcord(data.getYcord());
-
-                    earthquakeShelterRepository.save(earthquakeShelterEntity);
-                }
+            for(EarthquakeShelterDTO a : jsonResponse){
+                System.out.println(a.getArcd());
             }
+
+            return jsonResponse;
+
+//            // JSON 데이터 파싱
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            EarthquakeShelterResponseDTO responseDTO = objectMapper.readValue(jsonResponse, EarthquakeShelterResponseDTO.class);
+//
+//            System.out.println("Response DTO: " + responseDTO.toString());
+//
+//            // 파싱된 데이터 사용
+//            if (responseDTO != null && responseDTO.getEarthquakeOutdoorsShelter() != null) {
+//                List<EarthquakeShelterDTO> row = responseDTO.getEarthquakeOutdoorsShelter().get(0).getRow();
+//
+//                for (EarthquakeShelterDTO data : row) {
+//                    // 필요한 정보 추출하여 리스트에 추가
+//                    EarthquakeShelterDTO extractedData = new EarthquakeShelterDTO();
+//                    extractedData.setArcd(data.getArcd());
+//                    extractedData.setAcmdfclty_sn(data.getAcmdfclty_sn());
+//                    extractedData.setCtprvn_nm(data.getCtprvn_nm());
+//                    extractedData.setSgg_nm(data.getSgg_nm());
+//                    extractedData.setVt_acmdfclty_nm(data.getVt_acmdfclty_nm());
+//                    extractedData.setRdnmadr_cd(data.getRdnmadr_cd());
+//                    extractedData.setBdong_cd(data.getBdong_cd());
+//                    extractedData.setHdong_cd(data.getHdong_cd());
+//                    extractedData.setDtl_adres(data.getDtl_adres());
+//                    extractedData.setFclty_ar(data.getFclty_ar());
+//                    extractedData.setXcord(data.getXcord());
+//                    extractedData.setYcord(data.getYcord());
+//
+//                    extractedDataList.add(extractedData);
+//
+//                    // 필요한 정보 추출하여 엔티티에 저장
+//                    EarthquakeShelterData earthquakeShelterEntity = new EarthquakeShelterData();
+//                    earthquakeShelterEntity.setArcd(data.getArcd());
+//                    earthquakeShelterEntity.setAcmdfclty_sn(data.getAcmdfclty_sn());
+//                    earthquakeShelterEntity.setCtprvn_nm(data.getCtprvn_nm());
+//                    earthquakeShelterEntity.setSgg_nm(data.getSgg_nm());
+//                    earthquakeShelterEntity.setVt_acmdfclty_nm(data.getVt_acmdfclty_nm());
+//                    earthquakeShelterEntity.setRdnmadr_cd(data.getRdnmadr_cd());
+//                    earthquakeShelterEntity.setBdong_cd(data.getBdong_cd());
+//                    earthquakeShelterEntity.setHdong_cd(data.getHdong_cd());
+//                    earthquakeShelterEntity.setDtl_adres(data.getDtl_adres());
+//                    earthquakeShelterEntity.setFclty_ar(data.getFclty_ar());
+//                    earthquakeShelterEntity.setXcord(data.getXcord());
+//                    earthquakeShelterEntity.setYcord(data.getYcord());
+//
+//                    earthquakeShelterRepository.save(earthquakeShelterEntity);
+//          }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
