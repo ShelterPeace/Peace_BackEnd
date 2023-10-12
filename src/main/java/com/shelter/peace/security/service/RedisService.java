@@ -25,6 +25,7 @@ public class RedisService {
     }
 
     public String getValues(String key){
+        System.out.println("리프래시 토큰 키 값" + key);
         return redisTemplate.opsForValue().get(key);
     }
 

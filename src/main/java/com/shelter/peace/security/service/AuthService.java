@@ -52,22 +52,27 @@ public class AuthService {
         String requestAccessToken = resolveToken(requestAccessTokenInHeader);
 
         Authentication authentication = jwtTokenProvider.getAuthentication(requestAccessToken);
-        log.info("getAuthentication(requestAccessToken): " + authentication);
+//        log.info("getAuthentication(requestAccessToken): " + authentication);
         String principal = getPrincipal(requestAccessToken);
+//        log.info("principal: " + principal);
 
         String refreshTokenInRedis = redisService.getValues("RT(" + SERVER + "):" + principal);
+//        log.info("refreshTokenInRedis: " + refreshTokenInRedis);
         if (refreshTokenInRedis == null) { // Redis에 저장되어 있는 RT가 없을 경우
+//            log.info("refreshTokenInRedis == null: ");
             return null; // -> 재로그인 요청
         }
 
         // 요청된 RT의 유효성 검사 & Redis에 저장되어 있는 RT와 같은지 비교
         if(!jwtTokenProvider.validateRefreshToken(requestRefreshToken) || !refreshTokenInRedis.equals(requestRefreshToken)) {
+//            log.info("!jwtTokenProvider.validateRefreshToken(requestRefreshToken) || !refreshTokenInRedis.equals(requestRefreshToken)");
             redisService.deleteValues("RT(" + SERVER + "):" + principal); // 탈취 가능성 -> 삭제
             return null; // -> 재로그인 요청
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String authorities = getAuthorities(authentication);
+        log.info("authorities: " + authorities);
 
         // 토큰 재발급 및 Redis 업데이트
         redisService.deleteValues("RT(" + SERVER + "):" + principal); // 기존 RT 삭제

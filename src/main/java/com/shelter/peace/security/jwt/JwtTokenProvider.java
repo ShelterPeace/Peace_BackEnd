@@ -114,26 +114,28 @@ public class JwtTokenProvider implements InitializingBean {
 
     public boolean validateRefreshToken(String refreshToken){
         try {
+            log.info("refreshToken: " + refreshToken);
             if (redisService.getValues(refreshToken).equals("delete")) { // 회원 탈퇴했을 경우
                 return false;
             }
+            log.info("여기까지는 오나요?");
             Jwts.parserBuilder()
                     .setSigningKey(signingKey)
                     .build()
                     .parseClaimsJws(refreshToken);
             return true;
         } catch (SignatureException e) {
-            log.error("Invalid JWT signature.");
+            log.error("Invalid JWT signature.: " + e.getMessage());
         } catch (MalformedJwtException e) {
-            log.error("Invalid JWT token.");
+            log.error("Invalid JWT token." + e.getMessage());
         } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token.");
+            log.error("Expired JWT token." + e.getMessage());
         } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token.");
+            log.error("Unsupported JWT token." + e.getMessage());
         } catch (IllegalArgumentException e) {
-            log.error("JWT claims string is empty.");
+            log.error("JWT claims string is empty." + e.getMessage());
         } catch (NullPointerException e){
-            log.error("JWT Token is empty.");
+            log.error("JWT Token is empty." + e.getMessage());
         }
         return false;
     }
