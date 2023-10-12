@@ -3,14 +3,11 @@ package com.shelter.peace.shelterApi.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.shelter.peace.shelterApi.service.CivilShelterService;
 import com.shelter.peace.shelterApi.service.EarthquakeShelterService;
-import com.shelter.peace.shelterApi.service.dto.EarthquakeShelterDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/shelter")
@@ -31,8 +28,10 @@ public class ShelterApiController {
     @PostMapping("/upload/EarthquakeShelterData")
     public ResponseEntity<String> SaveEarthquakeShelterData() {
         try {
-            List<EarthquakeShelterDTO> extractedDataList = earthquakeShelterService.extractEarthquakeShelterData();
-            return new ResponseEntity<>("정보가 저장되었습니다. " + extractedDataList.size() + " records.", HttpStatus.OK);
+//            List<EarthquakeShelterDTO> extractedDataList = earthquakeShelterService.extractEarthquakeShelterData();
+            earthquakeShelterService.extractEarthquakeShelterData();
+            return new ResponseEntity<>("정보가 저장되었습니다. records.", HttpStatus.OK);
+//            return new ResponseEntity<>("정보가 저장되었습니다. " + extractedDataList.size() + " records.", HttpStatus.OK);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return new ResponseEntity<>("정보 저장에 실패하였습니다..", HttpStatus.INTERNAL_SERVER_ERROR);

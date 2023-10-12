@@ -1,22 +1,14 @@
 package com.shelter.peace.shelterApi.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.shelter.peace.shelterApi.entity.EarthquakeShelterData;
 import com.shelter.peace.shelterApi.repository.EarthquakeShelterRepository;
 import com.shelter.peace.shelterApi.service.EarthquakeShelterService;
-import com.shelter.peace.shelterApi.service.dto.EarthquakeShelterDTO;
-import com.shelter.peace.shelterApi.service.dto.EarthquakeShelterResponseDTO;
+import com.shelter.peace.shelterApi.service.dto.EarthquakeOutdoorsShelterResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class EarthquakeShelterServiceImpl implements EarthquakeShelterService {
@@ -31,8 +23,7 @@ public class EarthquakeShelterServiceImpl implements EarthquakeShelterService {
     private EarthquakeShelterRepository earthquakeShelterRepository;
 
     @Override
-    public List<EarthquakeShelterDTO> extractEarthquakeShelterData() {
-        List<EarthquakeShelterDTO> extractedDataList = new ArrayList<>();
+    public void extractEarthquakeShelterData() {
 
         // API 호출을 위한 URL 생성
         String url = apiUrl + "?serviceKey=" + apiKey + "&pageNo=1&numOfRows=5&type=json";
@@ -43,19 +34,37 @@ public class EarthquakeShelterServiceImpl implements EarthquakeShelterService {
             // API 호출 및 응답 받기
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<EarthquakeShelterResponseDTO> response = restTemplate.exchange(url, HttpMethod.GET, entity, EarthquakeShelterResponseDTO.class);
 
-            // JSON 응답 데이터 출력
-            List<EarthquakeShelterDTO> jsonResponse = response.getBody().getEarthquakeOutdoorsShelter().get(1).getRow();
-            System.out.println("Received JSON data: \n" + jsonResponse);
+            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+            System.out.println("Status Code: " + responseEntity.getStatusCode());
+            String responseBody = responseEntity.getBody();
+            System.out.println("Response Body: " + responseBody);
 
-            for(EarthquakeShelterDTO a : jsonResponse){
-                System.out.println(a.getArcd());
-            }
+            ObjectMapper objectMapper = new ObjectMapper();
+            EarthquakeOutdoorsShelterResponse earthquakeOutdoorsShelterResponse = objectMapper.readValue(responseBody, EarthquakeOutdoorsShelterResponse.class);
 
-            return jsonResponse;
+            earthquakeOutdoorsShelterResponse.getEarthquakeOutdoorsShelters()
+                    .forEach(System.out::println);
+
+//            ObjectMapper objectMapper = new ObjectMapper();
+////            try {
+//                EarthquakeShelterResponseDTO earthquakeShelterResponseDTO = objectMapper.readValue(responseBody, EarthquakeShelterResponseDTO.class);
+//                System.out.println("Parsed Response: " + earthquakeShelterResponseDTO);
+//            } catch (JsonProcessingException e) {
+//                e.printStackTrace();
+//            }
+//            System.out.println(response.getBody().getEarthquakeOutdoorsShelter());
+
+//            // JSON 응답 데이터 출력
+//            List<EarthquakeShelterDTO> jsonResponse = response.getBody().getEarthquakeOutdoorsShelter().get(1).getRow();
+//            System.out.println("Received JSON data: \n" + jsonResponse);
+//
+//            for(EarthquakeShelterDTO a : jsonResponse){
+//                System.out.println(a.getArcd());
+//            }
+
+//            return jsonResponse;
 
 //            // JSON 데이터 파싱
 //            ObjectMapper objectMapper = new ObjectMapper();
@@ -107,6 +116,6 @@ public class EarthquakeShelterServiceImpl implements EarthquakeShelterService {
             e.printStackTrace();
         }
 
-        return extractedDataList;
+//        return extractedDataList;
     }
 }
