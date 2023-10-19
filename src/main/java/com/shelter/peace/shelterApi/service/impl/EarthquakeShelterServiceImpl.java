@@ -1,9 +1,11 @@
 package com.shelter.peace.shelterApi.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shelter.peace.shelterApi.entity.EarthquakeShelterData;
 import com.shelter.peace.shelterApi.repository.EarthquakeShelterRepository;
 import com.shelter.peace.shelterApi.service.EarthquakeShelterService;
 import com.shelter.peace.shelterApi.service.dto.EarthquakeOutdoorsShelterResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@RequiredArgsConstructor
 public class EarthquakeShelterServiceImpl implements EarthquakeShelterService {
 
     @Value("${earthquake.shelter.url}")
@@ -19,8 +22,7 @@ public class EarthquakeShelterServiceImpl implements EarthquakeShelterService {
     @Value("${api.serviceKey}")
     private String apiKey;
 
-    @Autowired
-    private EarthquakeShelterRepository earthquakeShelterRepository;
+    private final EarthquakeShelterRepository earthquakeShelterRepository;
 
     @Override
     public void extractEarthquakeShelterData() {
@@ -44,8 +46,23 @@ public class EarthquakeShelterServiceImpl implements EarthquakeShelterService {
             ObjectMapper objectMapper = new ObjectMapper();
             EarthquakeOutdoorsShelterResponse earthquakeOutdoorsShelterResponse = objectMapper.readValue(responseBody, EarthquakeOutdoorsShelterResponse.class);
 
-            earthquakeOutdoorsShelterResponse.getEarthquakeOutdoorsShelters()
-                    .forEach(System.out::println);
+            earthquakeOutdoorsShelterResponse.getEarthquakeOutdoorsShelters().get(0).getRow().forEach(row -> {
+                EarthquakeShelterData shelterData = new EarthquakeShelterData();
+                shelterData.setArcd(row.getArcd());
+                shelterData.setAcmdfclty_sn(row.getAcmdfcltySn());
+                shelterData.setCtprvn_nm(row.getCtprvnNm());
+                shelterData.setSgg_nm(row.getSggNm());
+                shelterData.setVt_acmdfclty_nm(row.getVtAcmdfcltyNm());
+                shelterData.setRdnmadr_cd(row.getRdnmadrCd());
+                shelterData.setBdong_cd(row.getBdongCd());
+                shelterData.setHdong_cd(row.getHdongCd());
+                shelterData.setDtl_adres(row.getDtlAdres());
+                // 나머지 필드들도 setter를 호출하여 값을 설정합니다.
+
+
+                earthquakeShelterRepository.save(shelterData);
+            });
+
 
 //            ObjectMapper objectMapper = new ObjectMapper();
 ////            try {
