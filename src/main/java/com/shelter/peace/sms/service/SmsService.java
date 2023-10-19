@@ -37,7 +37,7 @@ public class SmsService {
     private String accessKey;
     @Value("${ncp.secret.key}")
     private String secretKey;
-    @Value("${phone.number")
+    @Value("${phone.number}")
     private String adminPhone;
     private String sensUrl = "https://sens.apigw.ntruss.com/sms/v2/services/" + serviceId + "/messages";
 
