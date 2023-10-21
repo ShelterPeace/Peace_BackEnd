@@ -25,7 +25,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -45,7 +44,7 @@ public class SmsService {
 
     private final StringRedisTemplate redisTemplate;
 
-    public SmsResponseDTO sendSms(MessageDTO messageDto) {
+    public SmsResponseDTO sendSms(MessageDTO messageDTO) {
         try {
             Long time = System.currentTimeMillis();
 
@@ -56,12 +55,12 @@ public class SmsService {
             headers.set("x-ncp-apigw-signature-v2", makeSignature(time));
 
             List<MessageDTO> messages = new ArrayList<>();
-            messages.add(messageDto);
+            messages.add(messageDTO);
 
             SmsRequestDTO request = SmsRequestDTO.builder()
                     .type("sms")
                     .from(adminPhone)
-                    .content(messageDto.getContent())
+                    .content(messageDTO.getContent())
                     .messages(messages)
                     .build();
 
