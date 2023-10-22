@@ -17,17 +17,17 @@ public class WeatherService {
     private String serviceKey;
 
     private final String ENCODE = "UTF-8";
-    private String weatherURL = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
+    private String weatherUrl = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
 
     public void getWeather(int nx, int ny) {
         try {
             String dateTime = getBaseDateTime();
-            System.out.println("dateTime: " + dateTime);
+
             String baseDate = dateTime.substring(0, 8);
             String baseTime = dateTime.substring(8);
 
             StringBuilder stringBuilder = new StringBuilder()
-                    .append(weatherURL)
+                    .append(weatherUrl)
                     .append("?ServiceKey=" + URLEncoder.encode(serviceKey, ENCODE))
                     .append("&pageNo=" + URLEncoder.encode("1", ENCODE))
                     .append("&numOfRows=" + URLEncoder.encode("1000", ENCODE))
@@ -37,24 +37,23 @@ public class WeatherService {
                     .append("&nx=" + URLEncoder.encode(String.valueOf(nx), ENCODE))
                     .append("&ny=" + URLEncoder.encode(String.valueOf(ny), ENCODE));
 
-
             RestTemplate restTemplate = new RestTemplate();
             WeatherDTO weatherResponse = restTemplate.getForObject(new URI(stringBuilder.toString()), WeatherDTO.class);
 
             weatherResponse.getResponse().getBody().getItems().getItem().stream()
                     .forEach(System.out::println);
 
-
         } catch (UnsupportedEncodingException e) {
-            System.out.println("UnsupportedEncodingException");
-            System.out.println(e.getMessage());
+            System.out.println("UnsupportedEncodingException: ");
+            System.out.print(e.getMessage());
             throw new RuntimeException(e);
         } catch (Exception e) {
-            System.out.println("Exception");
-            System.out.println(e.getMessage());
+            System.out.println("Exception: ");
+            System.out.print(e.getMessage());
             throw new RuntimeException(e);
         }
     }
+
 
     public String getBaseDateTime() {
         // 현재 날짜와 시간을 LocalDateTime 객체로 가져오기
