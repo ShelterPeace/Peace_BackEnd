@@ -32,7 +32,6 @@ public class PopulationService {
     private final String utf = "UTF-8";
     private final String apiUrl = "http://openapi.seoul.go.kr:8088";
 
-
     @Value("${seoul.population.api.key}")
     private String API_KEY;
 
@@ -55,7 +54,13 @@ public class PopulationService {
 
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<SeoulRtdCitydataPpltnDTO> response = restTemplate.exchange(new URI(url), HttpMethod.GET, entity, SeoulRtdCitydataPpltnDTO.class);
-
+            System.out.println("response: " + response);
+            System.out.println();
+            System.out.println("response.getStatusCode: " + response.getStatusCode());
+            System.out.println();
+            System.out.println("response.getHeaders: " + response.getHeaders());
+            System.out.println();
+            System.out.println("response.getBody: " + response.getBody());
             return response.getBody().getPopulationDTOList().get(0);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -64,10 +69,8 @@ public class PopulationService {
     }
 
 
-    public List<SeoulArea> parseExcel(MultipartFile file) {
+    public void parseExcel(MultipartFile file) {
         try {
-            List<SeoulArea> seoulAreaList = new ArrayList<>();
-
             String extension = FilenameUtils.getExtension(file.getOriginalFilename());
 
             if (!extension.equals("xlsx") && !extension.equals("xls")) {
@@ -103,8 +106,6 @@ public class PopulationService {
                     seoulAreaRepository.save(seoulArea);
                 }
             }
-
-            return seoulAreaList;
         } catch (Exception e) {
             System.out.println("excel 업로드 실패" + e.getMessage());
             throw new RuntimeException(e.getMessage());

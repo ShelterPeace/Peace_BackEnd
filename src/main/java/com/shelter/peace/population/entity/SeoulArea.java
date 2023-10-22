@@ -5,9 +5,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "SEOUL_AREA")
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class SeoulArea {
@@ -19,5 +17,4 @@ public class SeoulArea {
     private int no;
     private String areaCd;
     private String areaNm;
-
 }

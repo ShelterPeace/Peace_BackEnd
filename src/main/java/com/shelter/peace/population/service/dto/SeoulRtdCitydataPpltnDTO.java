@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 public class SeoulRtdCitydataPpltnDTO {
     @JsonProperty("SeoulRtd.citydata_ppltn")
-    private List<PopulationDTO> PopulationDTOList;
+    private List<PopulationDTO> populationDTOList;
 }
