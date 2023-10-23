@@ -57,6 +57,7 @@ public class JwtTokenProvider implements InitializingBean {
         signingKey = Keys.hmacShaKeyFor(secretKeyBytes);
     }
 
+    //토큰 생성
     @Transactional
     public AuthDTO.TokenDTO createToken(String userId, String authorities){
         Long now = System.currentTimeMillis();
@@ -118,7 +119,6 @@ public class JwtTokenProvider implements InitializingBean {
             if (redisService.getValues(refreshToken).equals("delete")) { // 회원 탈퇴했을 경우
                 return false;
             }
-            log.info("여기까지는 오나요?");
             Jwts.parserBuilder()
                     .setSigningKey(signingKey)
                     .build()
@@ -140,6 +140,7 @@ public class JwtTokenProvider implements InitializingBean {
         return false;
     }
 
+
     // Filter에서 사용
     public boolean validateAccessToken(String accessToken) {
         try {
@@ -158,6 +159,7 @@ public class JwtTokenProvider implements InitializingBean {
             return false;
         }
     }
+
 
     // 재발급 검증 API에서 사용
     public boolean validateAccessTokenOnlyExpired(String accessToken) {

@@ -33,14 +33,15 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        // ACL(Access Control List, 접근 제어 목록)의 예외 URL 설정
-        return (web)
-                -> web
-                .ignoring()
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()); // 정적 리소스들
-    }
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        // ACL(Access Control List, 접근 제어 목록)의 예외 URL 설정
+//        return (web)
+//                -> web
+//                .ignoring()
+//                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()); // 정적 리소스들
+//    }
+
 
     // 필터 체인 구현(HttpSecurity 객체 사용)
     @Bean
