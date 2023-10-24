@@ -1,6 +1,5 @@
 package com.shelter.peace.configuration;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;

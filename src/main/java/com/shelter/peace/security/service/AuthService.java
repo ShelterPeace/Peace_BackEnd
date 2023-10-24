@@ -35,6 +35,7 @@ public class AuthService {
 
         Authentication authentication = authenticationManagerBuilder.getObject()
                 .authenticate(authenticationToken);
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return generateToken(SERVER, authentication.getName(), getAuthorities(authentication));
@@ -46,26 +47,23 @@ public class AuthService {
         return jwtTokenProvider.validateAccessTokenOnlyExpired(requestAccessToken); // true = 재발급
     }
 
+
     // 토큰 재발급: validate 메서드가 true 반환할 때만 사용 -> AT, RT 재발급
     @Transactional
     public AuthDTO.TokenDTO reissue(String requestAccessTokenInHeader, String requestRefreshToken) {
         String requestAccessToken = resolveToken(requestAccessTokenInHeader);
 
         Authentication authentication = jwtTokenProvider.getAuthentication(requestAccessToken);
-//        log.info("getAuthentication(requestAccessToken): " + authentication);
         String principal = getPrincipal(requestAccessToken);
-//        log.info("principal: " + principal);
 
         String refreshTokenInRedis = redisService.getValues("RT(" + SERVER + "):" + principal);
-//        log.info("refreshTokenInRedis: " + refreshTokenInRedis);
+
         if (refreshTokenInRedis == null) { // Redis에 저장되어 있는 RT가 없을 경우
-//            log.info("refreshTokenInRedis == null: ");
             return null; // -> 재로그인 요청
         }
 
         // 요청된 RT의 유효성 검사 & Redis에 저장되어 있는 RT와 같은지 비교
         if(!jwtTokenProvider.validateRefreshToken(requestRefreshToken) || !refreshTokenInRedis.equals(requestRefreshToken)) {
-//            log.info("!jwtTokenProvider.validateRefreshToken(requestRefreshToken) || !refreshTokenInRedis.equals(requestRefreshToken)");
             redisService.deleteValues("RT(" + SERVER + "):" + principal); // 탈취 가능성 -> 삭제
             return null; // -> 재로그인 요청
         }
