@@ -1,5 +1,7 @@
 package com.shelter.peace.security.service.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +11,9 @@ public class AuthDTO {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class LoginDTO {
+        @NotEmpty(message = "아이디 값이 비어있습니다.")
         private String userId;
+        @NotEmpty(message = "비밀번호 값이 누락되었습니다.")
         private String userPwd;
 
         @Builder
@@ -19,26 +23,6 @@ public class AuthDTO {
         }
     }
 
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class SignupDTO {
-        private String userId;
-        private String userPwd;
-
-        @Builder
-        public SignupDTO(String userId, String userPwd) {
-            this.userId = userId;
-            this.userPwd = userPwd;
-        }
-
-        public static SignupDTO encodePassword(SignupDTO signupDTO, String encodedPassword) {
-            SignupDTO newSignupDTO = new SignupDTO();
-            newSignupDTO.userId = signupDTO.getUserId();
-            newSignupDTO.userPwd = signupDTO.getUserPwd();
-
-            return newSignupDTO;
-        }
-    }
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
