@@ -27,14 +27,13 @@ public class ShelterApiController {
     //전국 지진옥외대피시설 데이터 저장
     @PostMapping("/upload/EarthquakeShelterData")
     public ResponseEntity<String> SaveEarthquakeShelterData() {
+
         try {
-//            List<EarthquakeShelterDTO> extractedDataList = earthquakeShelterService.extractEarthquakeShelterData();
             earthquakeShelterService.extractEarthquakeShelterData();
-            return new ResponseEntity<>("정보가 저장되었습니다. records.", HttpStatus.OK);
-//            return new ResponseEntity<>("정보가 저장되었습니다. " + extractedDataList.size() + " records.", HttpStatus.OK);
+            return new ResponseEntity<>("정보가 저장되었습니다.", HttpStatus.OK);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            return new ResponseEntity<>("정보 저장에 실패하였습니다..", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("정보 저장에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
