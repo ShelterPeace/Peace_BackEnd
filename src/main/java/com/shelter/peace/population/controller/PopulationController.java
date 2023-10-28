@@ -1,6 +1,5 @@
 package com.shelter.peace.population.controller;
 
-
 import com.shelter.peace.dto.ResponseDTO;
 import com.shelter.peace.population.service.dto.PopulationDTO;
 import com.shelter.peace.population.service.PopulationService;
@@ -15,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class PopulationController {
     private final PopulationService populationService;
-
     @GetMapping("/hotspot")
     public ResponseEntity abc(@RequestParam(name = "area") String area) {
         ResponseDTO<PopulationDTO> responseDTO = new ResponseDTO<>();
