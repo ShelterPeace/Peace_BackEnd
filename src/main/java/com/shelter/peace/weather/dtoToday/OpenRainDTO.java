@@ -1,4 +1,4 @@
-package com.shelter.peace.weather.dtoNow;
+package com.shelter.peace.weather.dtoToday;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
