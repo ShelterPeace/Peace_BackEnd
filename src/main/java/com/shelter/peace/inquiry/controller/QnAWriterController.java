@@ -1,7 +1,9 @@
 package com.shelter.peace.inquiry.controller;
 
 import com.shelter.peace.inquiry.entity.QnABoard;
+import com.shelter.peace.inquiry.repository.QnABoardRepository;
 import com.shelter.peace.inquiry.service.QnABoardService;
+import com.shelter.peace.inquiry.service.dto.QnABoardDTO;
 import com.shelter.peace.user.entity.UserDetailsImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,14 +14,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/QnA")
 public class QnAWriterController {
 
     private final QnABoardService qnABoardService;
-    public QnAWriterController(QnABoardService qnABoardService) {
+    private final QnABoardRepository qnABoardRepository;
+    public QnAWriterController(QnABoardService qnABoardService, QnABoardRepository qnABoardRepository) {
         this.qnABoardService = qnABoardService;
 
+        this.qnABoardRepository = qnABoardRepository;
     }
 
     // 게시물 작성
@@ -38,11 +46,29 @@ public class QnAWriterController {
         return ResponseEntity.ok().build();
     }
     // 게시물 목록 조회
+//    @GetMapping("/list")
+//    public ResponseEntity<Page<QnABoard>> getAllQnABoards(@PageableDefault(size = 15, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
+//                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        String currentUser = userDetails.getUsername();
+//        Page<QnABoard> qnABoards = qnABoardService.getQnABoardsByUser(currentUser, pageable);
+//        return ResponseEntity.ok(qnABoards);
+//    }
     @GetMapping("/list")
-    public ResponseEntity<Page<QnABoard>> getAllQnABoards(@PageableDefault(size = 15, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
-                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        String currentUser = userDetails.getUsername();
-        Page<QnABoard> qnABoards = qnABoardService.getQnABoardsByUser(currentUser, pageable);
+    public ResponseEntity<List<QnABoardDTO>> getAllQnABoards() {
+        List<Object[]> results = qnABoardRepository.findQnABoardAdditionalInfo();
+        List<QnABoardDTO> qnABoards = new ArrayList<>();
+
+        for (Object[] result : results) {
+            QnABoardDTO dto = new QnABoardDTO();
+            dto.setQnANo((Long) result[0]);
+            dto.setQnATitle((String) result[1]);
+            dto.setQnACnt((int) result[2]);
+            dto.setCreatedDate((LocalDateTime) result[3]);
+            dto.setQnAWriter((String) result[4]);
+
+            qnABoards.add(dto);
+        }
+
         return ResponseEntity.ok(qnABoards);
     }
 
@@ -101,5 +127,16 @@ public class QnAWriterController {
         }
 
         return ResponseEntity.ok(qnABoards);
+    }
+
+    // 게시글 상세 조회
+    @GetMapping("/detail/{qnANo}")
+    public ResponseEntity<QnABoard> getQnABoardDetail(@PathVariable Long qnANo) {
+        QnABoard qnABoard = qnABoardService.getQnABoardByNo(qnANo);
+
+        if (qnABoard == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(qnABoard);
     }
 }
