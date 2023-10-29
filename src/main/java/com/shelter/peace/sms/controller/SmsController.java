@@ -7,16 +7,15 @@ import com.shelter.peace.sms.dto.SmsResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/sms")
 public class SmsController {
     private final SmsService smsService;
 
-    @PostMapping("/sms/send")
+    @PostMapping("/send")
     public ResponseEntity<?> sendSms(@RequestBody MessageDTO messageDTO) {
         ResponseDTO<SmsResponseDTO> responseDTO = new ResponseDTO<>();
         try {
@@ -33,8 +32,8 @@ public class SmsController {
     }
 
     //인증번호 전송
-    @PostMapping("/sms/auth/send")
-    public ResponseEntity<?> sendSms(@RequestBody String phone) {
+    @GetMapping("/auth/send")
+    public ResponseEntity<?> sendSms(@RequestParam(value = "phone") String phone) {
 
         smsService.sendAuthSms(phone);
 
@@ -42,7 +41,7 @@ public class SmsController {
     }
 
     //인증번호 확인
-    @PostMapping("/sms/auth/validate")
+    @PostMapping("/auth/validate")
     public ResponseEntity<?> verificationSms(@RequestBody MessageDTO messageDTO) {
 
         smsService.verifySms(messageDTO.getTo(), messageDTO.getContent());

@@ -1,11 +1,13 @@
 package com.shelter.peace.user.controller;
 
+import com.shelter.peace.dto.ResponseDTO;
 import com.shelter.peace.security.service.dto.Role;
 import com.shelter.peace.user.entity.UserDetailsImpl;
 import com.shelter.peace.user.service.UserService;
 import com.shelter.peace.user.service.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -63,5 +65,17 @@ public class UserController {
         userService.modifyAddress(userDTO);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/myInfo")
+    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        ResponseDTO<UserDTO> responseDTO = new ResponseDTO<>();
+
+        UserDTO userDTO = userService.getUserInfo(userDetails.getId());
+
+        responseDTO.setItem(userDTO);
+        responseDTO.setStatusCode(HttpStatus.OK.value());
+
+        return ResponseEntity.ok().body(responseDTO);
     }
 }
