@@ -8,15 +8,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/weather")
 public class WeatherController {
     private final OpenWeatherService openWeatherService;
 
-    @GetMapping("/today/weather")
+    @GetMapping("/today")
     public ResponseEntity<?> getNowWeatherInfo(@RequestParam(value = "lat") double lat,
                                                @RequestParam(value = "lon") double lon) {
         ResponseDTO<TodayWeatherResponseDTO> responseDTO = new ResponseDTO<>();
@@ -27,7 +29,7 @@ public class WeatherController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/week/weather")
+    @GetMapping("/week")
     public ResponseEntity<?> getWeekWeatherInfo(@RequestParam(value = "lat") double lat,
                                                 @RequestParam(value = "lon") double lon) {
         ResponseDTO<WeekWeatherResponseDTO> responseDTO = new ResponseDTO<>();
