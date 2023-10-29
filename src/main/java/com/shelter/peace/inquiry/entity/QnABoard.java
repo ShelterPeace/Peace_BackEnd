@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -34,14 +35,14 @@ public class QnABoard {
     private LocalDateTime createdDate; // 작성 날짜
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "USER_ID")
     private User user;
 
-    public void setUserDetails(User userDetails) {
-        this.qnAWriter = userDetails.getUserId(); // 또는 필요한 다른 정보를 설정할 수 있습니다
+    public QnABoard(String qnATitle, String qnAContent, User user) {
+        this.qnATitle = qnATitle;
+        this.qnAContent = qnAContent;
+        this.user = user;
     }
 
-    public void setUser(String currentUser) {
-    }
 }
 

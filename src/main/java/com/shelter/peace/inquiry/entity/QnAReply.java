@@ -37,6 +37,11 @@ public class QnAReply {
         }
         return null; // 게시물이 연결되어 있지 않다면 null을 반환하도록 설정
     }
-
+    public QnAReply(QnABoard qnABoard, User user, String content) {
+        this.qnABoard = qnABoard;
+        this.user = user;
+        this.content = content;
+        this.createdDate = LocalDateTime.now();
+    }
 
 }

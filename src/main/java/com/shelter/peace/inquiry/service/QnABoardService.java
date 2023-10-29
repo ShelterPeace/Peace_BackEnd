@@ -26,7 +26,7 @@ public class QnABoardService {
         return qnABoardRepository.findByUserUserId(userId, pageable);
     }
 
-    //QnA 작성
+    // QnA 작성
     @Transactional
     public QnABoard createQnABoard(QnABoard qnABoard, String currentUser) {
         // 제목과 내용이 비어 있는지 확인
@@ -35,13 +35,12 @@ public class QnABoardService {
             throw new IllegalArgumentException("제목과 내용은 필수 입력 항목입니다.");
         }
 
-        qnABoard.setQnAWriter(currentUser); // 작성자 설정
+        qnABoard.setQnAWriter(currentUser); // 사용자 정보 설정
         qnABoard.setQnACnt(1); // 조회수 초기화
         qnABoard.setCreatedDate(LocalDateTime.now()); // 작성 날짜 설정
 
         return qnABoardRepository.save(qnABoard);
     }
-
     // QnA 게시글 수정
     @Transactional
     public QnABoard updateQnABoard(Long qnANo, QnABoard updatedQnABoard, String currentUser) {
@@ -60,7 +59,11 @@ public class QnABoardService {
         String updatedTitle = updatedQnABoard.getQnATitle();
         String updatedContent = updatedQnABoard.getQnAContent();
 
-        if (!existingQnABoard.getQnATitle().equals(updatedTitle) || !existingQnABoard.getQnAContent().equals(updatedContent)) {
+        System.out.println("existingQnABoard: " + existingQnABoard);
+        System.out.println("updatedTitle: " + updatedTitle);
+        System.out.println("updatedContent: " + updatedContent);
+
+        if (!existingQnABoard.getQnATitle().equalsIgnoreCase(updatedTitle) || !existingQnABoard.getQnAContent().equalsIgnoreCase(updatedContent)) {
             existingQnABoard.setQnATitle(updatedTitle);
             existingQnABoard.setQnAContent(updatedContent);
             return qnABoardRepository.save(existingQnABoard);

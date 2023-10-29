@@ -19,14 +19,14 @@ public class UserDTO {
     private String userId;
     private String userPwd;
     private String userName;
-    private String userPhone;
     private String userAddress;
-    private LocalDate userBirth;
     private String userEmail;
-    private boolean userSvc;
-    private boolean userPs;
-    private boolean userLoc;
-    private LocalDate userRegDate;
+    //    private String userPhone;
+//    private LocalDate userBirth;
+//    private boolean userSvc;
+//    private boolean userPs;
+//    private boolean userLoc;
+//    private LocalDate userRegDate;
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -36,14 +36,14 @@ public class UserDTO {
                 .userId(this.userId)
                 .userPwd(this.userPwd)
                 .userName(this.userName)
-                .userPhone(this.userPhone)
                 .userAddress(this.userAddress)
-                .userBirth(this.userBirth)
                 .userEmail(this.userEmail)
-                .userSvc(this.userSvc)
-                .userPs(this.userPs)
-                .userLoc(this.userLoc)
-                .userRegDate(this.userRegDate)
+//                .userPhone(this.userPhone)
+//                .userBirth(this.userBirth)
+//                .userSvc(this.userSvc)
+//                .userPs(this.userPs)
+//                .userLoc(this.userLoc)
+//                .userRegDate(this.userRegDate)
                 .role(this.role)
                 .build();
     }
@@ -56,3 +56,6 @@ public class UserDTO {
     }
 
 }
+
+
+
