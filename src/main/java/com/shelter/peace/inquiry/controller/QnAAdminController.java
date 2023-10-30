@@ -29,6 +29,7 @@ public class QnAAdminController {
     @PostMapping("/answer")
     public ResponseEntity<String> createQnAReply(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody QnAReply qnAReply) {
         Long qnANo = qnAReply.getQnANo(); // 요청에서 게시물 ID 추출
+        System.out.println("aaaaaaaaaaaaa" + qnAReply.getContent());
         QnABoard qnABoard = qnABoardRepository.findById(qnANo).orElse(null);
 
         if (qnABoard == null) {

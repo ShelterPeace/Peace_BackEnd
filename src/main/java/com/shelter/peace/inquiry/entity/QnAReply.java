@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.time.LocalDateTime;
 
@@ -13,19 +14,24 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class QnAReply {
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     private String content;
 
+    @JsonIgnore
     @Column(name = "CREATED_DATE")
     private LocalDateTime createdDate; // 댓글 작성 날짜 및 시간
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "QNANO")
     private QnABoard qnABoard; // QnABoard와의 양방향 관계
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
