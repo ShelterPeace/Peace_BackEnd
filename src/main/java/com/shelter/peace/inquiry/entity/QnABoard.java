@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -44,5 +45,7 @@ public class QnABoard {
         this.user = user;
     }
 
+    @OneToMany(mappedBy = "qnABoard", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<QnAReply> qnAReplies;
 }
 
