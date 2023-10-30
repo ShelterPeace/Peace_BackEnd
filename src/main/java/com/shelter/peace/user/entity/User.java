@@ -2,6 +2,7 @@ package com.shelter.peace.user.entity;
 
 import com.shelter.peace.security.service.dto.Role;
 import com.shelter.peace.user.service.dto.UserDTO;
+import com.shelter.peace.weather.entity.InterestArea;
 import jakarta.persistence.*;
 import lombok.*;
 
