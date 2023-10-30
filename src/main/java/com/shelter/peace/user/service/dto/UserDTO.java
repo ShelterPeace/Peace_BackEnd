@@ -21,6 +21,7 @@ public class UserDTO {
     private String userName;
     private String userAddress;
     private String userEmail;
+    //    private String userPhone;
 //    private String userPhone;
 //    private LocalDate userBirth;
 //    private boolean userSvc;
@@ -56,3 +57,6 @@ public class UserDTO {
     }
 
 }
+
+
+

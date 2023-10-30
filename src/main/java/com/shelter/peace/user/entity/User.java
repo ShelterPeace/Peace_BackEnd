@@ -1,11 +1,14 @@
 package com.shelter.peace.user.entity;
 
+import com.shelter.peace.inquiry.entity.QnABoard;
 import com.shelter.peace.security.service.dto.Role;
 import com.shelter.peace.user.service.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "USER")
@@ -73,4 +76,8 @@ public class User {
                 .role(this.role)
                 .build();
     }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<QnABoard> qnABoards = new ArrayList<>();
 }
+
