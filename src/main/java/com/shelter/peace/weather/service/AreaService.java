@@ -1,6 +1,7 @@
 package com.shelter.peace.weather.service;
 
 import com.shelter.peace.weather.dto.GeoAreaDTO;
+import com.shelter.peace.weather.entity.InterestArea;
 import com.shelter.peace.weather.entity.KoreaArea;
 import com.shelter.peace.weather.repository.AreaRepository;
 import com.shelter.peace.weather.repository.KoreaAreaRepository;
@@ -35,7 +36,7 @@ public class AreaService {
     private String apiKey;
 
     // 지역 이름으로 위도 경도 구하기
-    public void insertIneterestArea(String areaName) {
+    public String getAreaLatLon(String areaName) {
         try {
             StringBuilder stringBuilder = new StringBuilder()
                     .append(areaUrl)
@@ -51,13 +52,29 @@ public class AreaService {
                     new ParameterizedTypeReference<>() {}
             );
             List<GeoAreaDTO> json = response.getBody();
-            json.stream().forEach(
-                    a -> System.out.println("위도: " + a.getLat() + ", 경도: " + a.getLon())
-            );
+
+            String returnStr = json.get(0).getLat() + "-" + json.get(0).getLon();
+
+            return returnStr;
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public void saveInterestArea(long id, String areaName) {
+        InterestArea interestArea = new InterestArea();
+        interestArea.setUserPk(id);
+        interestArea.setArea1Name(areaName);
+
+        String areaInfo = getAreaLatLon(areaName);
+
+        double lat = Double.parseDouble(areaInfo.split("-")[0]);
+        double lon = Double.parseDouble(areaInfo.split("-")[1]);
+
+        interestArea.setArea1Lat(lat);
+        interestArea.setArea1Lon(lon);
+
+        areaRepository.save(interestArea);
     }
 
 
