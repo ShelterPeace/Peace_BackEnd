@@ -45,10 +45,11 @@ public class WeatherController {
     // 관심지역 한 개 넣기
     @GetMapping("/geo/area")
     public void getGeoLoc(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                          @RequestParam("name") String name) {
+                          @RequestParam("name") String name,
+                          @RequestParam("num") int num) {
         long id = Long.parseLong(userDetails.getUsername());
         System.out.println("관심지역" + userDetails.getUsername());
-        areaService.saveInterestArea(id, name);
+        areaService.saveInterestArea(id, num, name);
     }
 
 

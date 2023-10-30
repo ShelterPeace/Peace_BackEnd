@@ -61,19 +61,28 @@ public class AreaService {
         }
     }
 
-    public void saveInterestArea(long id, String areaName) {
+    // 유저 값, 관심지역 번호, 지역 이름 받아서 저장하기
+    public void saveInterestArea(long id, int num, String areaName) {
         InterestArea interestArea = new InterestArea();
         interestArea.setUserPk(id);
-        interestArea.setArea1Name(areaName);
-
         String areaInfo = getAreaLatLon(areaName);
 
         double lat = Double.parseDouble(areaInfo.split("-")[0]);
         double lon = Double.parseDouble(areaInfo.split("-")[1]);
 
-        interestArea.setArea1Lat(lat);
-        interestArea.setArea1Lon(lon);
+        if (num == 1) {
+            interestArea.setArea1Name(areaName);
 
+            interestArea.setArea1Lat(lat);
+            interestArea.setArea1Lon(lon);
+        } else if (num == 2) {
+            interestArea.setArea2Name(areaName);
+
+            interestArea.setArea2Lat(lat);
+            interestArea.setArea2Lon(lon);
+        } else {
+            throw new RuntimeException("관심지역 번호 잘 못 됨");
+        }
         areaRepository.save(interestArea);
     }
 
