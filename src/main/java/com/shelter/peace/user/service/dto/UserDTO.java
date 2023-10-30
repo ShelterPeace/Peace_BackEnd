@@ -22,6 +22,7 @@ public class UserDTO {
     private String userAddress;
     private String userEmail;
     //    private String userPhone;
+//    private String userPhone;
 //    private LocalDate userBirth;
 //    private boolean userSvc;
 //    private boolean userPs;
@@ -50,7 +51,7 @@ public class UserDTO {
 
     @Getter
     @Setter
-    public class PasswordDTO {
+    public static class PasswordDTO {
         private String newPassword;
         private String newPasswordConfirm;
     }

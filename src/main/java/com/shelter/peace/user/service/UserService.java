@@ -72,4 +72,15 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public UserDTO getUserInfo(long id) {
+        User user = getUserById(id);
+
+        return UserDTO.builder()
+                .userName(user.getUserName())
+                .userId(user.getUserId())
+                .userEmail(user.getUserEmail())
+                .userAddress(user.getUserAddress())
+                .build();
+    }
+
 }
