@@ -37,6 +37,8 @@ public class QnAWriterController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
+        System.out.println("sssss" + qnABoard);
+
         if (qnABoard.getQnATitle() == null || qnABoard.getQnAContent() == null ||
                 qnABoard.getQnATitle().trim().isEmpty() || qnABoard.getQnAContent().trim().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("제목과 내용은 필수 입력 항목입니다.");
@@ -45,14 +47,8 @@ public class QnAWriterController {
         qnABoardService.createQnABoard(qnABoard, userDetails.getUsername()); // 사용자 ID를 가져와서 게시물 작성 서비스 호출
         return ResponseEntity.ok().build();
     }
+
     // 게시물 목록 조회
-//    @GetMapping("/list")
-//    public ResponseEntity<Page<QnABoard>> getAllQnABoards(@PageableDefault(size = 15, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
-//                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        String currentUser = userDetails.getUsername();
-//        Page<QnABoard> qnABoards = qnABoardService.getQnABoardsByUser(currentUser, pageable);
-//        return ResponseEntity.ok(qnABoards);
-//    }
     @GetMapping("/list")
     public ResponseEntity<List<QnABoardDTO>> getAllQnABoards() {
         List<Object[]> results = qnABoardRepository.findQnABoardAdditionalInfo();

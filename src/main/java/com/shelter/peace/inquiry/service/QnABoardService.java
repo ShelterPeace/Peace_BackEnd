@@ -2,23 +2,25 @@ package com.shelter.peace.inquiry.service;
 
 import com.shelter.peace.inquiry.entity.QnABoard;
 import com.shelter.peace.inquiry.repository.QnABoardRepository;
+import com.shelter.peace.user.entity.User;
+import com.shelter.peace.user.entity.UserDetailsImpl;
+import com.shelter.peace.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class QnABoardService {
 
     private final QnABoardRepository qnABoardRepository;
-
-    @Autowired
-    public QnABoardService(QnABoardRepository qnABoardRepository) {
-        this.qnABoardRepository = qnABoardRepository;
-    }
+    private final UserService userService;
 
     //로그인한 유저 본인의 글만 보이도록
     @Transactional
@@ -35,12 +37,33 @@ public class QnABoardService {
             throw new IllegalArgumentException("제목과 내용은 필수 입력 항목입니다.");
         }
 
+        User user = userService.getUserByUserId(currentUser);
+
+        qnABoard.setUser(user);
         qnABoard.setQnAWriter(currentUser); // 사용자 정보 설정
         qnABoard.setQnACnt(1); // 조회수 초기화
         qnABoard.setCreatedDate(LocalDateTime.now()); // 작성 날짜 설정
 
         return qnABoardRepository.save(qnABoard);
     }
+
+//    @Transactional
+//    public QnABoard createQnABoard(User user, String title, String content) {
+//        if (title == null || content == null || title.trim().isEmpty() || content.trim().isEmpty()) {
+//            throw new IllegalArgumentException("제목과 내용은 필수 입력 항목입니다.");
+//        }
+//
+//        QnABoard qnABoard = new QnABoard();
+//        qnABoard.setUser(user);
+//        qnABoard.setQnAWriter(user.getUserName());
+//        qnABoard.setQnACnt(1);
+//        qnABoard.setCreatedDate(LocalDateTime.now());
+//        qnABoard.setQnATitle(title);
+//        qnABoard.setQnAContent(content);
+//
+//        return qnABoardRepository.save(qnABoard);
+//    }
+
     // QnA 게시글 수정
     @Transactional
     public QnABoard updateQnABoard(Long qnANo, QnABoard updatedQnABoard, String currentUser) {
