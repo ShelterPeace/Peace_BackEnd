@@ -1,6 +1,7 @@
 package com.shelter.peace.weather.service;
 
 import com.shelter.peace.weather.dto.GeoAreaDTO;
+import com.shelter.peace.weather.dto.InterestAreaDTO;
 import com.shelter.peace.weather.entity.InterestArea;
 import com.shelter.peace.weather.entity.KoreaArea;
 import com.shelter.peace.weather.repository.AreaRepository;
@@ -61,30 +62,61 @@ public class AreaService {
         }
     }
 
-    // 유저 값, 관심지역 번호, 지역 이름 받아서 저장하기
-    public void saveInterestArea(long id, int num, String areaName) {
-        InterestArea interestArea = new InterestArea();
-        interestArea.setUserPk(id);
-        String areaInfo = getAreaLatLon(areaName);
+    // 유저 관심지역 신규 설정
+    public void saveInterestArea(InterestAreaDTO interestAreaDTO) {
+        String area1Info = null;
+        String area2Info = null;
 
-        double lat = Double.parseDouble(areaInfo.split("-")[0]);
-        double lon = Double.parseDouble(areaInfo.split("-")[1]);
+        if (!interestAreaDTO.getArea1Name().isEmpty()) {
+            area1Info = getAreaLatLon(interestAreaDTO.getArea1Name());
+            double lat = Double.parseDouble(area1Info.split("-")[0]);
+            double lon = Double.parseDouble(area1Info.split("-")[1]);
+            interestAreaDTO.setArea1Name(interestAreaDTO.getArea1Name());
+            interestAreaDTO.setArea1Lat(lat);
+            interestAreaDTO.setArea1Lon(lon);
+        }
+        if (!interestAreaDTO.getArea2Name().isEmpty()) {
+            area2Info = getAreaLatLon(interestAreaDTO.getArea2Name());
+            double lat = Double.parseDouble(area2Info.split("-")[0]);
+            double lon = Double.parseDouble(area2Info.split("-")[1]);
+            interestAreaDTO.setArea2Name(interestAreaDTO.getArea2Name());
+            interestAreaDTO.setArea2Lat(lat);
+            interestAreaDTO.setArea2Lon(lon);
+        }
 
-        if (num == 1) {
-            interestArea.setArea1Name(areaName);
+        areaRepository.save(interestAreaDTO.DTOTOEntity());
+    }
 
+    // 유저 관심지역 수정
+    public void updateInterestArea(InterestAreaDTO interestAreaDTO) {
+        InterestArea interestArea = getInterestArea(interestAreaDTO.getUserNo());
+
+        if (!interestAreaDTO.getArea1Name().isEmpty()) {
+            String area1Info = getAreaLatLon(interestAreaDTO.getArea1Name());
+            double lat = Double.parseDouble(area1Info.split("-")[0]);
+            double lon = Double.parseDouble(area1Info.split("-")[1]);
+            interestArea.setArea1Name(interestAreaDTO.getArea1Name());
             interestArea.setArea1Lat(lat);
             interestArea.setArea1Lon(lon);
-        } else if (num == 2) {
-            interestArea.setArea2Name(areaName);
-
+        }
+        if (!interestAreaDTO.getArea2Name().isEmpty()) {
+            String area2Info = getAreaLatLon(interestAreaDTO.getArea2Name());
+            double lat = Double.parseDouble(area2Info.split("-")[0]);
+            double lon = Double.parseDouble(area2Info.split("-")[1]);
+            interestArea.setArea2Name(interestAreaDTO.getArea2Name());
             interestArea.setArea2Lat(lat);
             interestArea.setArea2Lon(lon);
-        } else {
-            throw new RuntimeException("관심지역 번호 잘 못 됨");
         }
+
         areaRepository.save(interestArea);
     }
+
+    // 관심지역 확인
+    public InterestArea getInterestArea(long userNo) {
+        return areaRepository.findByUserNo(userNo)
+                .orElseThrow(() -> new RuntimeException("이 계정은 초기 설정을 해야합니다."));
+    }
+
 
 
     // 관리자가 지역구 엑셀파일로 데이터 넣기

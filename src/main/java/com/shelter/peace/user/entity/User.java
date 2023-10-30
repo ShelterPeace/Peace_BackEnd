@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.shelter.peace.inquiry.entity.QnABoard;
 import com.shelter.peace.security.service.dto.Role;
 import com.shelter.peace.user.service.dto.UserDTO;
+import com.shelter.peace.weather.entity.InterestArea;
 import jakarta.persistence.*;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;

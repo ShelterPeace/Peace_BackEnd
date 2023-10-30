@@ -1,7 +1,10 @@
 package com.shelter.peace.weather;
 
 import com.shelter.peace.dto.ResponseDTO;
+import com.shelter.peace.user.entity.User;
 import com.shelter.peace.user.entity.UserDetailsImpl;
+import com.shelter.peace.user.service.UserService;
+import com.shelter.peace.weather.dto.InterestAreaDTO;
 import com.shelter.peace.weather.dto.TodayWeatherResponseDTO;
 import com.shelter.peace.weather.dto.WeekWeatherResponseDTO;
 import com.shelter.peace.weather.service.AreaService;
@@ -42,14 +45,37 @@ public class WeatherController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    // 관심지역 한 개 넣기
-    @GetMapping("/geo/area")
-    public void getGeoLoc(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                          @RequestParam("name") String name,
-                          @RequestParam("num") int num) {
-        long id = Long.parseLong(userDetails.getUsername());
-        System.out.println("관심지역" + userDetails.getUsername());
-        areaService.saveInterestArea(id, num, name);
+    // 신규 관심지역 넣기
+    @PostMapping("/interest")
+    public ResponseEntity<?> insertInterestArea(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                          @RequestBody InterestAreaDTO interestAreaDTO){
+        interestAreaDTO.setUserNo(userDetails.getId());
+        areaService.saveInterestArea(interestAreaDTO);
+
+        return ResponseEntity.ok().build();
+    }
+
+    // 관심지역 수정
+    @PutMapping("/interest")
+    public ResponseEntity<?> updateInterestArea(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                       @RequestBody InterestAreaDTO interestAreaDTO){
+        interestAreaDTO.setUserNo(userDetails.getId());
+        areaService.updateInterestArea(interestAreaDTO);
+
+        return ResponseEntity.ok().build();
+    }
+
+    // 관심지역 확인
+    @GetMapping("/interest")
+    public ResponseEntity<?> getInterestArea(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        ResponseDTO<InterestAreaDTO> responseDTO = new ResponseDTO<>();
+
+        InterestAreaDTO interestAreaDTO = areaService.getInterestArea(userDetails.getId()).EntityTODTO();
+
+        responseDTO.setItem(interestAreaDTO);
+        responseDTO.setStatusCode(HttpStatus.OK.value());
+
+        return ResponseEntity.ok().body(responseDTO);
     }
 
 
