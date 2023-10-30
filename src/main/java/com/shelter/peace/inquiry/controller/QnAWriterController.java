@@ -133,6 +133,7 @@ public class QnAWriterController {
         if (qnABoard == null) {
             return ResponseEntity.notFound().build();
         }
+
         return ResponseEntity.ok(qnABoard);
     }
 }

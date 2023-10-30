@@ -47,23 +47,6 @@ public class QnABoardService {
         return qnABoardRepository.save(qnABoard);
     }
 
-//    @Transactional
-//    public QnABoard createQnABoard(User user, String title, String content) {
-//        if (title == null || content == null || title.trim().isEmpty() || content.trim().isEmpty()) {
-//            throw new IllegalArgumentException("제목과 내용은 필수 입력 항목입니다.");
-//        }
-//
-//        QnABoard qnABoard = new QnABoard();
-//        qnABoard.setUser(user);
-//        qnABoard.setQnAWriter(user.getUserName());
-//        qnABoard.setQnACnt(1);
-//        qnABoard.setCreatedDate(LocalDateTime.now());
-//        qnABoard.setQnATitle(title);
-//        qnABoard.setQnAContent(content);
-//
-//        return qnABoardRepository.save(qnABoard);
-//    }
-
     // QnA 게시글 수정
     @Transactional
     public QnABoard updateQnABoard(Long qnANo, QnABoard updatedQnABoard, String currentUser) {
@@ -109,16 +92,26 @@ public class QnABoardService {
         qnABoardRepository.deleteById(qnANo);
     }
 
-
-
     // QnA 게시물 ID로 게시물 조회
     @Transactional
     public QnABoard getQnABoardByNo(Long qnANo) {
-        return qnABoardRepository.findById(qnANo).orElse(null);
+        QnABoard qnABoard = qnABoardRepository.findById(qnANo).orElse(null);
+
+        if (qnABoard == null) {
+            return null;
+        }
+        // 조회수 증가
+        qnABoard.incrementQnACnt();
+        qnABoardRepository.save(qnABoard);
+
+        return qnABoard;
     }
+
     // QnA 게시물 qnATitle로 게시물 조회(제목에서 부분 문자열 일치 검색이 가능)
     @Transactional
     public Page<QnABoard> getQnABoardsByTitle(String qnATitle, Pageable pageable) {
         return qnABoardRepository.findByQnATitleContainingIgnoreCaseOrderByCreatedDateDesc(qnATitle, pageable);
     }
+
+
 }
