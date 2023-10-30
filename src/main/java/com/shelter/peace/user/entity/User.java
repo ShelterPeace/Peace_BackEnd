@@ -1,17 +1,19 @@
 package com.shelter.peace.user.entity;
 
+import com.shelter.peace.inquiry.entity.QnABoard;
+import com.shelter.peace.security.service.dto.Role;
 import com.shelter.peace.user.service.dto.UserDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "USER")
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,20 +29,20 @@ public class User {
     @Column(name = "USER_PWD", nullable = false)
     private String userPwd;
 
-//    @Column(name = "USER_NAME", nullable = false)
-//    private String userName;
-//
+    @Column(name = "USER_NAME", nullable = false)
+    private String userName;
+
+    @Column(name = "USER_ADDRESS", nullable = false)
+    private String userAddress;
+
+    @Column(name = "USER_EMAIL", nullable = true, unique = true)
+    private String userEmail = "";
+
 //    @Column(name = "USER_PHONE", nullable = false)
 //    private String userPhone;
 //
-//    @Column(name = "USER_ADDRESS", nullable = false)
-//    private String userAddress;
-//
 //    @Column(name = "USER_BIRTH", nullable = true)
 //    private LocalDate userBirth;
-//
-//    @Column(name = "USER_EMAIL", nullable = true, unique = true)
-//    private String userEmail = "";
 //
 //    @Column(name = "USER_SVC_YN", nullable = false)
 //    private boolean userSvc;
@@ -51,7 +53,7 @@ public class User {
 //    @Column(name = "USER_LOC_YN", nullable = false)
 //    private boolean userLoc;
 //
-//    @Column(name = "USER_REG_DATE", nullable = false)
+//    @Column(name = "USER_REG_DATE")
 //    private LocalDate userRegDate = LocalDate.now();
 
     @Enumerated(EnumType.STRING)
@@ -62,7 +64,7 @@ public class User {
                 .id(this.id)
                 .userId(this.userId)
                 .userPwd(this.userPwd)
-//                .userName(this.userName)
+                .userName(this.userName)
 //                .userPhone(this.userPhone)
 //                .userAddress(this.userAddress)
 //                .userBirth(this.userBirth)
@@ -74,4 +76,8 @@ public class User {
                 .role(this.role)
                 .build();
     }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<QnABoard> qnABoards = new ArrayList<>();
 }
+

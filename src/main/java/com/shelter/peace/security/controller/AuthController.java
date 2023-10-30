@@ -2,14 +2,10 @@ package com.shelter.peace.security.controller;
 
 import com.shelter.peace.security.service.AuthService;
 import com.shelter.peace.security.service.dto.AuthDTO;
-import com.shelter.peace.user.entity.Role;
-import com.shelter.peace.user.service.UserService;
-import com.shelter.peace.user.service.dto.UserDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -18,22 +14,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-    private final UserService userService;
-    private final BCryptPasswordEncoder encoder;
 
     private final long COOKIE_EXPIRATION = 7776000; // 90일
-
-    // 회원가입
-    @PostMapping("/signup")
-    public ResponseEntity<Void> signup(@RequestBody UserDTO userDTO) {
-        log.info("회원가입 userDTO: " + userDTO );
-        String encodedPassword = encoder.encode(userDTO.getUserPwd());
-        userDTO.setUserPwd(encodedPassword);
-        userDTO.setRole(Role.USER);
-
-        userService.signupUser(userDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
     // 로그인 -> 토큰 발급
     @PostMapping("/login")
@@ -56,6 +38,7 @@ public class AuthController {
                 .build();
     }
 
+    //액세스 토큰 검증
     @PostMapping("/validate")
     public ResponseEntity<?> validate(@RequestHeader("Authorization") String requestAccessToken) {
         if (!authService.validate(requestAccessToken)) {
@@ -64,6 +47,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 재발급 필요
         }
     }
+
     // 토큰 재발급
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(@CookieValue(name = "refresh-token") String requestRefreshToken,

@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class RedisService {
     private final RedisTemplate<String, String> redisTemplate;
 
+    // 만료시간 없는 저장
     @Transactional
     public void setValues(String key, String value){
         redisTemplate.opsForValue().set(key, value);
@@ -25,7 +26,6 @@ public class RedisService {
     }
 
     public String getValues(String key){
-        System.out.println("리프래시 토큰 키 값" + key);
         return redisTemplate.opsForValue().get(key);
     }
 

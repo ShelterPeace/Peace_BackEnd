@@ -47,4 +47,12 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isEnabled() {    // 계정의 활성화 여부
         return true;
     }
+
+    public long getId() {
+        return user.getId();
+    }
+
+    public User getUser() {
+        return user;
+    }
 }

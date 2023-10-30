@@ -157,6 +157,7 @@ public class SmsService {
         deleteCertification(phone);
     }
 
+    //인증번호 검증하기
     private boolean isVerify(String phone, String certificationNumber) {
         return hasCertification(phone) &&
                 getCertification(phone).equals(certificationNumber);

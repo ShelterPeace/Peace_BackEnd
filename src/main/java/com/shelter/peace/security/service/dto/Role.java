@@ -1,4 +1,4 @@
-package com.shelter.peace.user.entity;
+package com.shelter.peace.security.service.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

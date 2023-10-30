@@ -1,10 +1,11 @@
 package com.shelter.peace.user.service.dto;
 
-import com.shelter.peace.user.entity.Role;
+import com.shelter.peace.security.service.dto.Role;
 import com.shelter.peace.user.entity.User;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,11 +18,12 @@ public class UserDTO {
     private Long id;
     private String userId;
     private String userPwd;
-//    private String userName;
+    private String userName;
+    private String userAddress;
+    private String userEmail;
+    //    private String userPhone;
 //    private String userPhone;
-//    private String userAddress;
 //    private LocalDate userBirth;
-//    private String userEmail;
 //    private boolean userSvc;
 //    private boolean userPs;
 //    private boolean userLoc;
@@ -34,11 +36,11 @@ public class UserDTO {
                 .id(this.id)
                 .userId(this.userId)
                 .userPwd(this.userPwd)
-//                .userName(this.userName)
+                .userName(this.userName)
+                .userAddress(this.userAddress)
+                .userEmail(this.userEmail)
 //                .userPhone(this.userPhone)
-//                .userAddress(this.userAddress)
 //                .userBirth(this.userBirth)
-//                .userEmail(this.userEmail)
 //                .userSvc(this.userSvc)
 //                .userPs(this.userPs)
 //                .userLoc(this.userLoc)
@@ -46,4 +48,15 @@ public class UserDTO {
                 .role(this.role)
                 .build();
     }
+
+    @Getter
+    @Setter
+    public static class PasswordDTO {
+        private String newPassword;
+        private String newPasswordConfirm;
+    }
+
 }
+
+
+
