@@ -103,8 +103,16 @@ public class OpenWeatherService {
                         Collectors.groupingBy(
                                 item -> dtToLocalDate(item.getDt())
                         ));
+        Map<LocalDate, List<WeekWeatherItemDTO>> sortedGroupedByDate = groupedByDate.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue,
+                        LinkedHashMap::new
+                ));
 
-        groupedByDate.forEach((date, weatherList) -> {
+        sortedGroupedByDate.forEach((date, weatherList) -> {
             double minTemp = weatherList.stream()
                     .mapToDouble(item -> item.getMain().getTemp())
                     .min()
