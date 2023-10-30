@@ -1,6 +1,8 @@
 package com.shelter.peace.weather.service;
 
+import com.shelter.peace.weather.dto.GeoAreaDTO;
 import com.shelter.peace.weather.entity.KoreaArea;
+import com.shelter.peace.weather.repository.AreaRepository;
 import com.shelter.peace.weather.repository.KoreaAreaRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
@@ -9,14 +11,57 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class AreaService {
     private final KoreaAreaRepository koreaAreaRepository;
+    private final AreaRepository areaRepository;
 
+    private String areaUrl = "https://api.openweathermap.org/geo/1.0/direct?q=";
+//    https://api.openweathermap.org/geo/1.0/direct?q=%EC%88%98%EC%9B%90&limit=5&appid=?
+    @Value("${open.weather.map.api.key}")
+    private String apiKey;
+
+    // 지역 이름으로 위도 경도 구하기
+    public void insertIneterestArea(String areaName) {
+        try {
+            StringBuilder stringBuilder = new StringBuilder()
+                    .append(areaUrl)
+                    .append(areaName)
+                    .append("&appid=")
+                    .append(apiKey);
+
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<List<GeoAreaDTO>> response = restTemplate.exchange(
+                    new URI(stringBuilder.toString()),
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<>() {}
+            );
+            List<GeoAreaDTO> json = response.getBody();
+            json.stream().forEach(
+                    a -> System.out.println("위도: " + a.getLat() + ", 경도: " + a.getLon())
+            );
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+    // 관리자가 지역구 엑셀파일로 데이터 넣기
     public void parseExcel(MultipartFile file) {
         try {
             String extension = FilenameUtils.getExtension(file.getOriginalFilename());
@@ -85,4 +130,6 @@ public class AreaService {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+
 }

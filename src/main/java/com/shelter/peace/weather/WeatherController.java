@@ -40,6 +40,14 @@ public class WeatherController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    // 이름으로 위,경도 찾기
+    @GetMapping("/geo/area")
+    public void getGeoLoc(@RequestParam("name") String name) {
+        areaService.insertIneterestArea(name);
+    }
+
+
+    // 관리자가 지역 엑셀파일 넣기
     @PostMapping("/area")
     public void uploadFile(@RequestParam("file") MultipartFile file) {
         areaService.parseExcel(file);
