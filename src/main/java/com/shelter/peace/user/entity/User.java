@@ -1,10 +1,13 @@
 package com.shelter.peace.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.shelter.peace.inquiry.entity.QnABoard;
 import com.shelter.peace.security.service.dto.Role;
 import com.shelter.peace.user.service.dto.UserDTO;
+import com.shelter.peace.weather.entity.InterestArea;
 import jakarta.persistence.*;
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -76,7 +79,8 @@ public class User {
                 .role(this.role)
                 .build();
     }
-
+    @JsonIgnore
+    @JsonBackReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<QnABoard> qnABoards = new ArrayList<>();
 }

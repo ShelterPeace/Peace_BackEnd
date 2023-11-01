@@ -14,4 +14,9 @@ public class DataUploadController {
     public String excelForm() {
         return "excel";
     }
+
+    @GetMapping("/area/upload")
+    public String areaForm() {
+        return "areaUpload";
+    }
 }
