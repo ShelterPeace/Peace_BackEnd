@@ -11,4 +11,8 @@ import java.util.List;
 public interface MsgRepository extends JpaRepository<DisasterMsg, Long> {
     DisasterMsgDTO save(DisasterMsgDTO disasterMsgDTO);
     List<DisasterMsg> findAll();
+
+    boolean existsByCreateDateAndLocationIdAndLocationNameAndMd101SnAndMessageAndSendPlatform(
+            String createDate, String locationId, String locationName,
+            int md101Sn, String message, String sendPlatform);
 }

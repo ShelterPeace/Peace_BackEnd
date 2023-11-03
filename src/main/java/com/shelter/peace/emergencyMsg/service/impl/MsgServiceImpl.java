@@ -77,16 +77,8 @@ public class MsgServiceImpl implements MsgService {
 
                             System.out.println("cccccccc");
 
-                            // 데이터를 저장소에 저장
-                            DisasterMsg disasterMsg = new DisasterMsg();
-                            disasterMsg.setCreateDate(disasterMsgDTO.getCreateDate());
-                            disasterMsg.setLocationId(String.valueOf(disasterMsgDTO.getLocationId()));
-                            disasterMsg.setLocationName(disasterMsgDTO.getLocationName());
-                            disasterMsg.setMd101Sn(disasterMsgDTO.getMd101Sn());
-                            disasterMsg.setMessage(disasterMsgDTO.getMessage());
-                            disasterMsg.setSendPlatform(disasterMsgDTO.getSendPlatform());
-
-                            msgRepository.save(disasterMsg);
+                            // 데이터를 저장소에 저장 (중복 방지 처리 포함)
+                            saveOrUpdateDisasterMsg(disasterMsgDTO);
                         }
                     }
                 }
@@ -94,6 +86,32 @@ public class MsgServiceImpl implements MsgService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void saveOrUpdateDisasterMsg(DisasterMsgDTO disasterMsgDTO) {
+        // 동일한 속성을 가진 레코드가 이미 존재하는지 확인
+        boolean recordExists = msgRepository.existsByCreateDateAndLocationIdAndLocationNameAndMd101SnAndMessageAndSendPlatform(
+                disasterMsgDTO.getCreateDate(),
+                String.valueOf(disasterMsgDTO.getLocationId()),
+                disasterMsgDTO.getLocationName(),
+                disasterMsgDTO.getMd101Sn(),
+                disasterMsgDTO.getMessage(),
+                disasterMsgDTO.getSendPlatform()
+        );
+
+        // 레코드가 존재하지 않는 경우 저장
+        if (!recordExists) {
+            DisasterMsg disasterMsg = new DisasterMsg();
+            disasterMsg.setCreateDate(disasterMsgDTO.getCreateDate());
+            disasterMsg.setLocationId(String.valueOf(disasterMsgDTO.getLocationId()));
+            disasterMsg.setLocationName(disasterMsgDTO.getLocationName());
+            disasterMsg.setMd101Sn(disasterMsgDTO.getMd101Sn());
+            disasterMsg.setMessage(disasterMsgDTO.getMessage());
+            disasterMsg.setSendPlatform(disasterMsgDTO.getSendPlatform());
+
+            msgRepository.save(disasterMsg);
+        }
+        // 이미 레코드가 존재하는 경우 아무 작업 없음
     }
 }
 
