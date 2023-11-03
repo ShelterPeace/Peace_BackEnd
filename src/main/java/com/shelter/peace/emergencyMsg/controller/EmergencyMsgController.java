@@ -24,7 +24,7 @@ public class EmergencyMsgController {
         this.msgRepository = msgRepository;
     }
 
-
+    // 데이터 수동 저장(최초 1회 실행 후 자동으로 업데이트 됩니다.)
     @GetMapping("/disaster")
     public ResponseEntity<String> extractDisasterMsgData() {
         try {
@@ -36,6 +36,7 @@ public class EmergencyMsgController {
         }
     }
 
+    // 전체 내역 보기
     @GetMapping("/all")
     public List<DisasterMsg> getAllDisasterMessages() {
         return msgRepository.findAll(); // 모든 데이터를 조회
