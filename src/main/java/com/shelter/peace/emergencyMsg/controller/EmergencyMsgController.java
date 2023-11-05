@@ -1,10 +1,12 @@
 package com.shelter.peace.emergencyMsg.controller;
 
 import com.shelter.peace.emergencyMsg.entity.DisasterMsg;
+import com.shelter.peace.emergencyMsg.entity.UserNotification;
 import com.shelter.peace.emergencyMsg.repository.MsgRepository;
 import com.shelter.peace.emergencyMsg.service.MsgService;
 import com.shelter.peace.emergencyMsg.service.impl.KeywordService;
 import com.shelter.peace.emergencyMsg.service.impl.UserKeywordService;
+import com.shelter.peace.emergencyMsg.service.impl.UserNotificationService;
 import com.shelter.peace.user.entity.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,12 +25,14 @@ public class EmergencyMsgController {
     private final MsgRepository msgRepository;
     private final KeywordService keywordService;
     private final UserKeywordService userKeywordService;
+    private final UserNotificationService userNotificationService;
     @Autowired
-    public EmergencyMsgController(MsgService msgService, MsgRepository msgRepository, KeywordService keywordService, UserKeywordService userKeywordService) {
+    public EmergencyMsgController(MsgService msgService, MsgRepository msgRepository, KeywordService keywordService, UserKeywordService userKeywordService, UserNotificationService userNotificationService) {
         this.msgService = msgService;
         this.msgRepository = msgRepository;
         this.keywordService = keywordService;
         this.userKeywordService = userKeywordService;
+        this.userNotificationService = userNotificationService;
     }
 
     // 데이터 수동 저장(최초 1회 실행 후 자동으로 업데이트 됩니다.)
@@ -114,6 +118,18 @@ public class EmergencyMsgController {
             userKeywordService.deleteUserKeyword(username, kw);
         }
         return ResponseEntity.ok("키워드가 성공적으로 삭제되었습니다.");
+    }
+
+    //사용자별로 알림내용 확인하기
+    @GetMapping("/notifications")
+    public ResponseEntity<List<UserNotification>> getUserNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        String userId = userDetails.getUsername();
+        List<UserNotification> notifications = userNotificationService.getNotificationsByUserId(userId);
+        return ResponseEntity.ok(notifications);
     }
 }
 
