@@ -5,6 +5,7 @@ import com.shelter.peace.emergencyMsg.entity.UserNotification;
 import com.shelter.peace.emergencyMsg.repository.MsgRepository;
 import com.shelter.peace.emergencyMsg.service.MsgService;
 import com.shelter.peace.emergencyMsg.service.impl.KeywordService;
+import com.shelter.peace.emergencyMsg.service.impl.LocationMsgService;
 import com.shelter.peace.emergencyMsg.service.impl.UserKeywordService;
 import com.shelter.peace.emergencyMsg.service.impl.UserNotificationService;
 import com.shelter.peace.user.entity.UserDetailsImpl;
@@ -26,13 +27,15 @@ public class EmergencyMsgController {
     private final KeywordService keywordService;
     private final UserKeywordService userKeywordService;
     private final UserNotificationService userNotificationService;
+    private final LocationMsgService locationMsgService;
     @Autowired
-    public EmergencyMsgController(MsgService msgService, MsgRepository msgRepository, KeywordService keywordService, UserKeywordService userKeywordService, UserNotificationService userNotificationService) {
+    public EmergencyMsgController(MsgService msgService, MsgRepository msgRepository, KeywordService keywordService, UserKeywordService userKeywordService, UserNotificationService userNotificationService, LocationMsgService locationMsgService) {
         this.msgService = msgService;
         this.msgRepository = msgRepository;
         this.keywordService = keywordService;
         this.userKeywordService = userKeywordService;
         this.userNotificationService = userNotificationService;
+        this.locationMsgService = locationMsgService;
     }
 
     // 데이터 수동 저장(최초 1회 실행 후 자동으로 업데이트 됩니다.)
@@ -131,5 +134,37 @@ public class EmergencyMsgController {
         List<UserNotification> notifications = userNotificationService.getNotificationsByUserId(userId);
         return ResponseEntity.ok(notifications);
     }
+
+    // 사용자가 원하는 지역을 설정
+    @PostMapping("/location")
+    public ResponseEntity<String> setUserLocation(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam String locationName) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+
+        Long userId = userDetails.getId();  // 로그인한 사용자의 ID를 가져옵니다.
+        String result = locationMsgService.setUserLocation(userId, locationName);
+        if (result.equals("지역설정이 완료되었습니다.")) {
+            return ResponseEntity.ok().body(result);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        }
+
+    }
+    // 로그인한 사용자의 지역 정보에 맞는 재난 문자 데이터를 가져오는 API
+    @GetMapping("/location/disasterMsgs")
+    public ResponseEntity<?> getDisasterMsgsForUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+
+        Long userId = userDetails.getId();  // 로그인한 사용자의 ID를 가져옵니다.
+        List<DisasterMsg> disasterMsgs = locationMsgService.getDisasterMsgsForUser(userId);
+        if (disasterMsgs == null || disasterMsgs.isEmpty()) {
+            return ResponseEntity.ok().body("해당하는 재난문자가 없습니다.");
+        }
+        return ResponseEntity.ok(disasterMsgs);
+    }
 }
+
 

@@ -2,6 +2,7 @@ package com.shelter.peace.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.shelter.peace.emergencyMsg.entity.UserKeyword;
+import com.shelter.peace.emergencyMsg.entity.UserMsgLocation;
 import com.shelter.peace.inquiry.entity.QnABoard;
 import com.shelter.peace.security.service.dto.Role;
 import com.shelter.peace.user.service.dto.UserDTO;
@@ -87,6 +88,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserKeyword> userKeywords = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserMsgLocation> userMsgLocations = new ArrayList<>();
 
 }
 

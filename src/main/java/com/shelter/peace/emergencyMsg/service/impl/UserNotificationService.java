@@ -72,7 +72,7 @@ public class UserNotificationService implements NotificationService {
     }
 
     public List<UserNotification> getNotificationsByUserId(String userId) {
-        return userNotificationRepository.findByUserId(userId);
+        return userNotificationRepository.findByUser_UserId(userId);
     }
 
 }
