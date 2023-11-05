@@ -78,4 +78,10 @@ public class UserKeywordService {
             }
         }
     }
+
+    // 모든 사용자 키워드 가져오기
+    public List<UserKeyword> getAllUserKeywords() {
+        return entityManager.createQuery("SELECT uk FROM UserKeyword uk", UserKeyword.class)
+                .getResultList();
+    }
 }

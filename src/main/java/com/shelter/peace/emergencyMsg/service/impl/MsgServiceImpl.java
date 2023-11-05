@@ -1,6 +1,7 @@
 package com.shelter.peace.emergencyMsg.service.impl;
 
 import com.shelter.peace.emergencyMsg.entity.DisasterMsg;
+import com.shelter.peace.emergencyMsg.entity.UserKeyword;
 import com.shelter.peace.emergencyMsg.repository.MsgRepository;
 import com.shelter.peace.emergencyMsg.service.MsgService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +31,9 @@ public class MsgServiceImpl implements MsgService {
     private String apiKey;
 
     private final MsgRepository msgRepository;
-    private final KeywordService keywordService;
+    private final UserKeywordService userKeywordService;
+    private final UserNotificationService userNotificationService;
+
 
     @Override
     public boolean extractDisasterMsgData() {
@@ -65,13 +69,13 @@ public class MsgServiceImpl implements MsgService {
                 String message = rowElement.getElementsByTagName("msg").item(0).getTextContent();
                 String sendPlatform = rowElement.getElementsByTagName("send_platform").item(0).getTextContent();
 
-                // KeywordService를 사용하여 메시지 처리
-                String processedSentence = keywordService.processMessageForKeywords(message);
-
-                if (processedSentence != null) {
-                    System.out.println(processedSentence);
-                    // 추후 추가적으로 로그인한 유저의 관련엔티티에 컬럼 추가로 만들어서 그안에 저장 예정
-                }
+//                // KeywordService를 사용하여 메시지 처리
+//                String processedSentence = keywordService.processMessageForKeywords(message);
+//
+//                if (processedSentence != null) {
+//                    System.out.println(processedSentence);
+//                    // 추후 추가적으로 로그인한 유저의 관련엔티티에 컬럼 추가로 만들어서 그안에 저장 예정
+//                }
 
 
                 // 데이터를 저장소에 저장 (중복 방지 처리 포함)
@@ -105,6 +109,14 @@ public class MsgServiceImpl implements MsgService {
             disasterMsg.setSendPlatform(sendPlatform);
 
             msgRepository.save(disasterMsg);
+        }
+        // 사용자의 키워드가 메시지에 포함되어 있는지 확인
+        List<UserKeyword> userKeywords = userKeywordService.getAllUserKeywords();
+        for (UserKeyword userKeyword : userKeywords) {
+            if (message.contains(userKeyword.getKeyword())) {
+                // 키워드가 메시지에 포함되어 있으면 해당 사용자에게 알림 보내기
+                userNotificationService.sendNotification(userKeyword.getUser().getUserId(), message);
+            }
         }
         // 이미 레코드가 존재하는 경우 아무 작업 없음
     }
