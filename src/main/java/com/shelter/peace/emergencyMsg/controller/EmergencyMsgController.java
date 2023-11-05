@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -81,29 +82,37 @@ public class EmergencyMsgController {
 
     //사용자 키워드 추가하기
     @PostMapping("/addKeyword")
-    public ResponseEntity<String> addUserKeyword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam String keyword) {
+    public ResponseEntity<String> addUserKeyword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam List<String> keyword) {
         try {
             if (userDetails == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
             }
             String username = userDetails.getUsername();
-            userKeywordService.saveUserKeyword(username, keyword);
+            List<String> results = new ArrayList<>();
+            for (String kw : keyword) {
+                String result = userKeywordService.saveUserKeyword(username, kw);
+                if (!result.equals("키워드 저장이 완료되었습니다")) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+                }
+                results.add(result);
+            }
             return ResponseEntity.ok("키워드가 성공적으로 추가되었습니다.");
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
         }
     }
-
     // 사용자 키워드 삭제하기
-    @PostMapping("/deleteKeyword")
-    public ResponseEntity<String> deleteUserKeyword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam String keyword) {
+    @DeleteMapping("/deleteKeyword")
+    public ResponseEntity<String> deleteUserKeyword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam List<String> keyword) {
         if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
         String username = userDetails.getUsername();
-        userKeywordService.deleteUserKeyword(username, keyword);
+        for (String kw : keyword) {
+            userKeywordService.deleteUserKeyword(username, kw);
+        }
         return ResponseEntity.ok("키워드가 성공적으로 삭제되었습니다.");
     }
 }
