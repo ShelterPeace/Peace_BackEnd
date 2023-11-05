@@ -83,7 +83,7 @@ public class WeatherController {
     }
 
     // 사용자 관심 지역의 오늘 날씨 구하기
-    @GetMapping("/interest/week")
+    @GetMapping("/interest/today")
     public ResponseEntity<?> getInterestToday(@AuthenticationPrincipal UserDetailsImpl userDetails){
         ResponseDTO<TodayResponseDTO> responseDTO = new ResponseDTO<>();
         List<TodayResponseDTO> todayResponseDTOList = new ArrayList<>();
@@ -96,6 +96,29 @@ public class WeatherController {
         todayResponseDTOList.add(area2);
 
         responseDTO.setItems(todayResponseDTOList);
+        responseDTO.setStatusCode(HttpStatus.OK.value());
+
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    // 사용자 관심 지역의 주간 날씨 구하기
+    @GetMapping("/interest/week")
+    public ResponseEntity<?> getInterestWeek(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                             @RequestParam(value = "area") int num){
+        ResponseDTO<WeekResponseDTO> responseDTO = new ResponseDTO<>();
+
+        InterestAreaDTO interestAreaDTO = areaService.getInterestArea(userDetails.getId()).EntityTODTO();
+
+        if (num == 1) {
+            responseDTO.setItems(openWeatherService.getWeekWeather(interestAreaDTO.getArea1Lat(), interestAreaDTO.getArea1Lon()));
+        } else if (num == 2) {
+            responseDTO.setItems(openWeatherService.getWeekWeather(interestAreaDTO.getArea2Lat(), interestAreaDTO.getArea2Lon()));
+        } else {
+            responseDTO.setErrorMessage("관심지역 번호가 제대로 지정되지 않았습니다.");
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+
         responseDTO.setStatusCode(HttpStatus.OK.value());
 
         return ResponseEntity.ok().body(responseDTO);
