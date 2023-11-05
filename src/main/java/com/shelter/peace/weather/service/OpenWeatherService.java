@@ -1,9 +1,10 @@
 package com.shelter.peace.weather.service;
 
-import com.shelter.peace.weather.dto.TodayWeatherResponseDTO;
-import com.shelter.peace.weather.dto.WeekWeatherResponseDTO;
+import com.shelter.peace.weather.dto.TodayResponseDTO;
+import com.shelter.peace.weather.dto.WeekResponseDTO;
 import com.shelter.peace.weather.dtoToday.OpenWeatherResponseDTO;
 import com.shelter.peace.weather.dtoWeek.WeekWeatherItemDTO;
+import com.shelter.peace.weather.dtoWeek.WeekWeatherResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -27,7 +28,7 @@ public class OpenWeatherService {
     @Value("${open.weather.map.api.key}")
     public String apiKey;
 
-    public TodayWeatherResponseDTO getNowWeather(double lat, double lon) {
+    public TodayResponseDTO getNowWeather(double lat, double lon) {
         try {
             StringBuilder stringBuilder = new StringBuilder()
                     .append(weatherUrl)
@@ -44,7 +45,7 @@ public class OpenWeatherService {
             RestTemplate restTemplate = new RestTemplate();
             OpenWeatherResponseDTO json = restTemplate.getForObject(new URI(stringBuilder.toString()), OpenWeatherResponseDTO.class);
 
-            TodayWeatherResponseDTO responseDTO = TodayWeatherResponseDTO.builder()
+            TodayResponseDTO responseDTO = TodayResponseDTO.builder()
                     .temp(json.getMain().getTemp() + " C")
                     .description(json.getWeather().get(0).getDescription())
                     .feelTemp(json.getMain().getFeels_like() + " C")
@@ -70,7 +71,7 @@ public class OpenWeatherService {
         }
     }
 
-    public List<WeekWeatherResponseDTO> getWeekWeather(double lat, double lon) {
+    public List<WeekResponseDTO> getWeekWeather(double lat, double lon) {
         try {
             StringBuilder stringBuilder = new StringBuilder()
                     .append(weatherUrl)
@@ -86,8 +87,7 @@ public class OpenWeatherService {
 
             RestTemplate restTemplate = new RestTemplate();
 
-            com.shelter.peace.weather.dtoWeek.WeekWeatherResponseDTO json = restTemplate.getForObject(new URI(stringBuilder.toString()), com.shelter.peace.weather.dtoWeek.WeekWeatherResponseDTO.class);
-
+            WeekWeatherResponseDTO json = restTemplate.getForObject(new URI(stringBuilder.toString()), WeekWeatherResponseDTO.class);
             return getWeekWeatherInfo(json.getList());
 
         } catch (URISyntaxException e) {
@@ -95,8 +95,8 @@ public class OpenWeatherService {
         }
     }
 
-    public List<WeekWeatherResponseDTO> getWeekWeatherInfo(List<WeekWeatherItemDTO> weatherItemList) {
-        List<WeekWeatherResponseDTO> returnList = new ArrayList<>();
+    public List<WeekResponseDTO> getWeekWeatherInfo(List<WeekWeatherItemDTO> weatherItemList) {
+        List<WeekResponseDTO> returnList = new ArrayList<>();
 
         Map<LocalDate, List<WeekWeatherItemDTO>> groupedByDate = weatherItemList.stream()
                 .collect(
@@ -123,7 +123,7 @@ public class OpenWeatherService {
                     .max()
                     .orElse(Double.NaN);
 
-            WeekWeatherResponseDTO weatherData = new WeekWeatherResponseDTO();
+            WeekResponseDTO weatherData = new WeekResponseDTO();
             weatherData.setDate(date.toString());
             weatherData.setMinTemperature(minTemp);
             weatherData.setMaxTemperature(maxTemp);

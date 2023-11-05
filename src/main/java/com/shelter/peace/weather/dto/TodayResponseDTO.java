@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class TodayWeatherResponseDTO {
+public class TodayResponseDTO {
     // 온도
     private String temp;
     // 설명

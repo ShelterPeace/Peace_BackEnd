@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class WeekWeatherResponseDTO {
+public class WeekResponseDTO {
     private String date;
     private double minTemperature;
     private double maxTemperature;
