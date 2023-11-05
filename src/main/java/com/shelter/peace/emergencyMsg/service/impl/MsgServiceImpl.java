@@ -29,6 +29,7 @@ public class MsgServiceImpl implements MsgService {
     private String apiKey;
 
     private final MsgRepository msgRepository;
+    private final KeywordService keywordService;
 
     @Override
     public boolean extractDisasterMsgData() {
@@ -63,6 +64,15 @@ public class MsgServiceImpl implements MsgService {
                 int md101Sn = Integer.parseInt(rowElement.getElementsByTagName("md101_sn").item(0).getTextContent());
                 String message = rowElement.getElementsByTagName("msg").item(0).getTextContent();
                 String sendPlatform = rowElement.getElementsByTagName("send_platform").item(0).getTextContent();
+
+                // KeywordService를 사용하여 메시지 처리
+                String processedSentence = keywordService.processMessageForKeywords(message);
+
+                if (processedSentence != null) {
+                    System.out.println(processedSentence);
+                    // 추후 추가적으로 로그인한 유저의 관련엔티티에 컬럼 추가로 만들어서 그안에 저장 예정
+                }
+
 
                 // 데이터를 저장소에 저장 (중복 방지 처리 포함)
                 saveOrUpdateDisasterMsg(createDate, locationId, locationName,
