@@ -64,11 +64,39 @@ public class KeywordService {
         fKeywords.add("비");
         fKeywords.add("침수");
         fKeywords.add("홍수");
-        // "교통"에 대한 문장
+        // "호우"에 대한 문장
         List<String> fSentences = new ArrayList<>();
-        cSentences.add("호우 및 비 관련 안내사항");
+        fSentences.add("호우 및 비 관련 안내사항");
         keywordToSentences.put("호우", fKeywords);
         keywordToSentences.put("호우", fSentences);
+
+        //대표키워드 : 해일
+        List<String> gKeywords = new ArrayList<>();
+        gKeywords.add("해안 저지대");
+        // "해일"에 대한 문장
+        List<String> gSentences = new ArrayList<>();
+        gSentences.add("해일 관련 안내사항");
+        keywordToSentences.put("해일", gKeywords);
+        keywordToSentences.put("해일", gSentences);
+
+        //대표키워드 : 산사태
+        List<String> hKeywords = new ArrayList<>();
+        hKeywords.add("산사태위기경보");
+        // "산사태"에 대한 문장
+        List<String> hSentences = new ArrayList<>();
+        hSentences.add("산사태 관련 안내사항");
+        keywordToSentences.put("산사태", hKeywords);
+        keywordToSentences.put("산사태", hSentences);
+
+        //대표키워드 : 폭염
+        List<String> iKeywords = new ArrayList<>();
+        iKeywords.add("무더위 쉼터");
+        iKeywords.add("수분섭취");
+        // "폭염"에 대한 문장
+        List<String> iSentences = new ArrayList<>();
+        iSentences.add("폭염 관련 안내사항");
+        keywordToSentences.put("폭염", iKeywords);
+        keywordToSentences.put("폭염", iSentences);
 
     }
 
@@ -92,4 +120,21 @@ public class KeywordService {
         return "";
     }
 
+    public Map<String, List<String>> getKeywordToSentences() {
+        return keywordToSentences;
+    }
+
+    public boolean isValidKeyword(String keyword) {
+        // keywordToSentences 맵에서 키워드가 유효한지 확인
+        for (Map.Entry<String, List<String>> entry : keywordToSentences.entrySet()) {
+            String representativeKeyword = entry.getKey();
+            List<String> relatedKeywords = entry.getValue();
+
+            if (representativeKeyword.equals(keyword) || relatedKeywords.contains(keyword)) {
+                return true;
+            }
+        }
+
+        return false; // 대표 키워드 또는 관련 키워드 목록에 없는 경우
+    }
 }
