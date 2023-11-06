@@ -4,10 +4,8 @@ import com.shelter.peace.emergencyMsg.entity.DisasterMsg;
 import com.shelter.peace.emergencyMsg.entity.UserNotification;
 import com.shelter.peace.emergencyMsg.repository.MsgRepository;
 import com.shelter.peace.emergencyMsg.service.MsgService;
-import com.shelter.peace.emergencyMsg.service.impl.KeywordService;
-import com.shelter.peace.emergencyMsg.service.impl.LocationMsgService;
-import com.shelter.peace.emergencyMsg.service.impl.UserKeywordService;
-import com.shelter.peace.emergencyMsg.service.impl.UserNotificationService;
+import com.shelter.peace.emergencyMsg.service.dto.FilteredDisasterMsgDto;
+import com.shelter.peace.emergencyMsg.service.impl.*;
 import com.shelter.peace.user.entity.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,14 +26,17 @@ public class EmergencyMsgController {
     private final UserKeywordService userKeywordService;
     private final UserNotificationService userNotificationService;
     private final LocationMsgService locationMsgService;
+
+    private final MsgFilterService msgFilterService;
     @Autowired
-    public EmergencyMsgController(MsgService msgService, MsgRepository msgRepository, KeywordService keywordService, UserKeywordService userKeywordService, UserNotificationService userNotificationService, LocationMsgService locationMsgService) {
+    public EmergencyMsgController(MsgService msgService, MsgRepository msgRepository, KeywordService keywordService, UserKeywordService userKeywordService, UserNotificationService userNotificationService, LocationMsgService locationMsgService, MsgFilterService msgFilterService) {
         this.msgService = msgService;
         this.msgRepository = msgRepository;
         this.keywordService = keywordService;
         this.userKeywordService = userKeywordService;
         this.userNotificationService = userNotificationService;
         this.locationMsgService = locationMsgService;
+        this.msgFilterService = msgFilterService;
     }
 
     // 데이터 수동 저장(최초 1회 실행 후 자동으로 업데이트 됩니다.)
@@ -142,7 +143,7 @@ public class EmergencyMsgController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
-        Long userId = userDetails.getId();  // 로그인한 사용자의 ID를 가져옵니다.
+        Long userId = userDetails.getId();
         String result = locationMsgService.setUserLocation(userId, locationName);
         if (result.equals("지역설정이 완료되었습니다.")) {
             return ResponseEntity.ok().body(result);
@@ -158,13 +159,46 @@ public class EmergencyMsgController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
-        Long userId = userDetails.getId();  // 로그인한 사용자의 ID를 가져옵니다.
+        Long userId = userDetails.getId();
         List<DisasterMsg> disasterMsgs = locationMsgService.getDisasterMsgsForUser(userId);
         if (disasterMsgs == null || disasterMsgs.isEmpty()) {
             return ResponseEntity.ok().body("해당하는 재난문자가 없습니다.");
         }
         return ResponseEntity.ok(disasterMsgs);
     }
+
+    // 로그인한 사용자의 지역 및 키워드 설정에 따라 필터링된 재난문자를 가져오는 API
+    @GetMapping("/filtered/disasterMsgs")
+    public ResponseEntity<?> getFilteredDisasterMsgsForUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+
+        Long userId = userDetails.getId();
+        List<FilteredDisasterMsgDto> filteredDisasterMsgs = msgFilterService.getFilteredDisasterMsgsForUser(userId);
+
+        if (filteredDisasterMsgs.isEmpty()) {
+            return ResponseEntity.ok().body("해당하는 재난문자가 없습니다.");
+        }
+
+        for (FilteredDisasterMsgDto filteredDisasterMsg : filteredDisasterMsgs) {
+            List<String> matchingKeywords = filteredDisasterMsg.getMatchingKeywords();
+            List<String> matchingKeywordSentences = new ArrayList<>();
+
+            for (String keyword : matchingKeywords) {
+                String keywordSentence = keywordService.processMessageForKeywords(keyword);
+                if (!keywordSentence.isEmpty()) {
+                    matchingKeywordSentences.add(keywordSentence);
+                }
+            }
+            filteredDisasterMsg.setMatchingKeywordSentences(matchingKeywordSentences);
+        }
+
+        return ResponseEntity.ok(filteredDisasterMsgs);
+    }
+
+
+
 }
 
 
