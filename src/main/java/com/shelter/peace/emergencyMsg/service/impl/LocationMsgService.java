@@ -66,4 +66,25 @@ public class LocationMsgService {
         return "지역설정이 완료되었습니다.";
     }
 
+    public void deleteUserLocation(Long userId, String locationName) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        List<UserMsgLocation> userMsgLocations = userMsgLocationRepository.findByUser(user);
+        UserMsgLocation targetLocation = null;
+        for (UserMsgLocation userMsgLocation : userMsgLocations) {
+            if (userMsgLocation.getLocationName().equals(locationName)) {
+                targetLocation = userMsgLocation;
+                break;
+            }
+        }
+
+        if (targetLocation != null) {
+            userMsgLocationRepository.delete(targetLocation);
+        } else {
+            throw new RuntimeException("지정된 지역이 사용자의 설정에 없습니다.");
+        }
+    }
 }

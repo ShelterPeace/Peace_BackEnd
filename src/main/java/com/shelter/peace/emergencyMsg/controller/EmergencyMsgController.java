@@ -89,7 +89,7 @@ public class EmergencyMsgController {
     }
 
     //사용자 키워드 추가하기
-    @PostMapping("/addKeyword")
+    @PostMapping("/keyword")
     public ResponseEntity<String> addUserKeyword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam List<String> keyword) {
         try {
             if (userDetails == null) {
@@ -111,7 +111,7 @@ public class EmergencyMsgController {
         }
     }
     // 사용자 키워드 삭제하기
-    @DeleteMapping("/deleteKeyword")
+    @DeleteMapping("/keyword")
     public ResponseEntity<String> deleteUserKeyword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam List<String> keyword) {
         if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
@@ -138,20 +138,40 @@ public class EmergencyMsgController {
 
     // 사용자가 원하는 지역을 설정
     @PostMapping("/location")
-    public ResponseEntity<String> setUserLocation(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam String locationName) {
+    public ResponseEntity<String> setUserLocation(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam List<String> locationNames) {
         if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
         Long userId = userDetails.getId();
-        String result = locationMsgService.setUserLocation(userId, locationName);
-        if (result.equals("지역설정이 완료되었습니다.")) {
-            return ResponseEntity.ok().body(result);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        try {
+            for (String locationName : locationNames) {
+                locationMsgService.setUserLocation(userId, locationName);
+            }
+            return ResponseEntity.ok("지역 설정이 성공적으로 완료되었습니다.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    // 사용자가 설정한 지역을 삭제하는 API
+    @DeleteMapping("/location")
+    public ResponseEntity<String> deleteUserLocation(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam List<String> locationNames) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
+        Long userId = userDetails.getId();
+        try {
+            for (String locationName : locationNames) {
+                locationMsgService.deleteUserLocation(userId, locationName);
+            }
+            return ResponseEntity.ok("지역 설정이 성공적으로 삭제되었습니다.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
+
     // 로그인한 사용자의 지역 정보에 맞는 재난 문자 데이터를 가져오는 API
     @GetMapping("/location/disasterMsgs")
     public ResponseEntity<?> getDisasterMsgsForUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
