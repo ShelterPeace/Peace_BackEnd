@@ -64,6 +64,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    public User(String kakaoEmail, String nickname, String profile, String encodedPassword) {
+    }
+
     public UserDTO EntityTODTO() {
         return UserDTO.builder()
                 .id(this.id)

@@ -49,6 +49,12 @@ public class UserDTO {
                 .build();
     }
 
+    public void setAccessToken(String token) {
+    }
+
+    public void setRefreshToken(String refreshToken) {
+    }
+
     @Getter
     @Setter
     public static class PasswordDTO {
