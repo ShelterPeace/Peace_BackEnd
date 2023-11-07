@@ -67,6 +67,9 @@ public class User {
     public User(String kakaoEmail, String nickname, String profile, String encodedPassword) {
     }
 
+    public User(int id, String email) {
+    }
+
     public UserDTO EntityTODTO() {
         return UserDTO.builder()
                 .id(this.id)
