@@ -1,6 +1,7 @@
 package com.shelter.peace.security.jwt;
 
 import com.shelter.peace.security.service.RedisService;
+import com.shelter.peace.user.entity.User;
 import com.shelter.peace.user.entity.UserDetailsImpl;
 import com.shelter.peace.user.service.UserDetailsServiceImpl;
 import com.shelter.peace.security.service.dto.AuthDTO;

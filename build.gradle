@@ -60,6 +60,10 @@ dependencies {
     implementation 'io.github.bonigarcia:webdrivermanager:5.3.0'
 
     implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.3' // JAXB 구현
+    //gson
+    implementation 'com.google.code.gson:gson:2.8.7'
+    //Webclient
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
 
 tasks.named('test') {
