@@ -1,18 +1,27 @@
 package com.shelter.peace.kakaoLogin.service;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.shelter.peace.kakaoLogin.entity.KakaoUser;
+import com.shelter.peace.kakaoLogin.repository.KakaoRepository;
+import com.shelter.peace.user.entity.User;
+import com.shelter.peace.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
 public class KakaoService {
-    public String getAccessToken (String authorize_code) {
+
+    private final KakaoRepository kakaoRepository;
+
+    public String getAccessToken(String authorize_code) {
         String access_Token = "";
         String refresh_Token = "";
         String reqURL = "https://kauth.kakao.com/oauth/token";
@@ -70,11 +79,13 @@ public class KakaoService {
         return access_Token;
     }
 
-    public String createKakaoUser(String token) {
+    public String createKakaoUser(String token) throws Exception {
 
-        String reqURL = "https://kapi.kakao.com/v2/user/me";
+        final String reqURL = "https://kapi.kakao.com/v2/user/me";
 
-        //access_token을 이용하여 사용자 정보 조회
+        int id = 0;
+        String email = null;
+        String nickname = null;
         try {
             URL url = new URL(reqURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -101,21 +112,32 @@ public class KakaoService {
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
 
-            int id = element.getAsJsonObject().get("id").getAsInt();
+            id = element.getAsJsonObject().get("id").getAsInt();
             boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
-            String email = "";
-            if(hasEmail){
+            email = "";
+            if (hasEmail) {
                 email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
             }
 
-            System.out.println("id : " + id);
-            System.out.println("email : " + email);
+            // "properties" 객체에서 "nickname" 가져오기
+            JsonObject properties = element.getAsJsonObject().getAsJsonObject("properties");
+            nickname = properties.get("nickname").getAsString();
+
+            System.out.println("id: " + id);
+            System.out.println("email: " + email);
+            System.out.println("nickname: " + nickname);
 
             br.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        //DB저장
+        KakaoUser kakaoUser = new KakaoUser((long) id, email, nickname);
+        kakaoRepository.save(kakaoUser);
+
         return reqURL;
     }
 }
+
+
