@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.shelter.peace.kakaoLogin.entity.KakaoUser;
 import com.shelter.peace.kakaoLogin.repository.KakaoRepository;
+import com.shelter.peace.security.service.dto.Role;
 import com.shelter.peace.user.entity.User;
 import com.shelter.peace.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 public class KakaoService {
 
     private final KakaoRepository kakaoRepository;
+    private final UserRepository userRepository;
 
     public String getAccessToken(String authorize_code) {
         String access_Token = "";
@@ -127,14 +129,22 @@ public class KakaoService {
             System.out.println("email: " + email);
             System.out.println("nickname: " + nickname);
 
+            //db저장
+            User user = new User();
+            user.setUserId(String.valueOf(id));  // KakaoUser의 id를 userId로 사용합니다.
+            user.setUserPwd("0");  // 기본 비밀번호를 설정합니다.
+            user.setUserName(nickname);  // 기본 사용자명을 설정합니다.
+            user.setUserAddress("0");  // 기본 사용자 주소를 설정합니다.
+            user.setUserEmail(email);  // KakaoUser의 이메일을 userEmail로 설정합니다.
+            user.setRole(Role.USER);
+
+
+            userRepository.save(user);
+
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        //DB저장
-        KakaoUser kakaoUser = new KakaoUser((long) id, email, nickname);
-        kakaoRepository.save(kakaoUser);
 
         return reqURL;
     }
