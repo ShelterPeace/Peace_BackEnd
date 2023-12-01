@@ -15,6 +15,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -130,16 +131,21 @@ public class KakaoService {
             System.out.println("nickname: " + nickname);
 
             //db저장
-            User user = new User();
-            user.setUserId(String.valueOf(id));  // KakaoUser의 id를 userId로 사용합니다.
-            user.setUserPwd("0");  // 기본 비밀번호를 설정합니다.
-            user.setUserName(nickname);  // 기본 사용자명을 설정합니다.
-            user.setUserAddress("0");  // 기본 사용자 주소를 설정합니다.
-            user.setUserEmail(email);  // KakaoUser의 이메일을 userEmail로 설정합니다.
-            user.setRole(Role.USER);
+            Optional<User> existingUser = userRepository.findByUserEmail(email);
 
+            if (existingUser.isEmpty()) {
+                User user = new User();
+                user.setUserId(String.valueOf(id));  // KakaoUser의 id를 userId로 사용합니다.
+                user.setUserPwd("0");  // 기본 비밀번호를 설정합니다.
+                user.setUserName(nickname);  // 기본 사용자명을 설정합니다.
+                user.setUserAddress("0");  // 기본 사용자 주소를 설정합니다.
+                user.setUserEmail(email);  // KakaoUser의 이메일을 userEmail로 설정합니다.
+                user.setRole(Role.USER);
 
-            userRepository.save(user);
+                userRepository.save(user);
+            } else {
+                System.out.println("이미 있는 유저입니다.");
+            }
 
             br.close();
         } catch (IOException e) {
