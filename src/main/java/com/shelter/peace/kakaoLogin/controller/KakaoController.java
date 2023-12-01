@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
-@Controller // Change to @Controller to render HTML
+@Controller
 @RequiredArgsConstructor
 public class KakaoController {
     private final KakaoService kakaoService;
@@ -16,15 +16,11 @@ public class KakaoController {
     @GetMapping("/oauth/callback/kakao")
     public String kakaoLogin(Model model, @RequestParam(value = "code", required = false) String code) throws Exception {
         model.addAttribute("kakaoUrl", "https://kauth.kakao.com/oauth/authorize?client_id=32f42cf6b572f36e99516fb994f935b6&redirect_uri=http://localhost:8080/oauth/callback/kakao&response_type=code");
-
-        System.out.println("#########" + code);
-
          String access_Token = kakaoService.getAccessToken(code);
-         System.out.println("###access_Token#### : " + access_Token);
 
          String userInfo = kakaoService.createKakaoUser(access_Token);
          System.out.println(userInfo);
 
-        return "kakao"; // Thymeleaf template name (kakao.html)
+        return "kakao";
     }
 }
