@@ -6,10 +6,6 @@ phases:
       - echo Build Starting on `date`
       - chmod +x ./gradlew
       - ./gradlew build
-  post_build:
-    commands:
-      - echo $(basename ./build/libs/*.war)
-      - pwd
 
 artifacts:
   files:
