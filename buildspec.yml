@@ -5,7 +5,7 @@ phases:
     commands:
       - echo Build Starting on `date`
       - chmod +x ./gradlew
-      - ./gradlew clean build
+      - ./gradlew clean build --warning-mode all
 
 artifacts:
   files:
