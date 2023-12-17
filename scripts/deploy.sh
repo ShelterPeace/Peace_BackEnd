@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BUILD_WAR=$(ls /home/ec2-user/xmpi_deploy/target/*.jar)
+BUILD_WAR=$(ls /home/ec2-user/xmpi_deploy/target/*.war)
 WAR_NAME=$(basename $BUILD_WAR)
 echo "> build 파일명: $WAR_NAME" >> /home/ec2-user/xmpi_deploy.log
 echo "> debugging: $BUILD_WAR" >> /home/ec2-user/xmpi_deploy.log
