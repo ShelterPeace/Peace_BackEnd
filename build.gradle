@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.shelter'
 version = '0.0.1-SNAPSHOT'
-apply plugin: 'war'
+//apply plugin: 'war'
 
 java {
     sourceCompatibility = '17'
